@@ -1,0 +1,19 @@
+server:
+  port: 7001
+
+spring:
+  application:
+    name: ms-dict
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    healthcheck:
+      enabled: true
+    registry-fetch-interval-seconds: 30 # 拉取服务列表
+  instance:
+    lease-expiration-duration-in-seconds: 15 # 30钞过期
+    lease-renewal-interval-in-seconds: 5 # 5秒一次心跳
+    prefer-ip-address: true
+    ip-address: localhost
