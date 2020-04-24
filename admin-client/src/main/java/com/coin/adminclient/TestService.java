@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @Date 2020/4/16 21:41
  * @Version V1.0
  **/
-@FeignClient(name = "ms-client")
+@FeignClient(name = "ms-client", fallback = TestHystrix.class)
 public interface TestService {
 
     @GetMapping("test/hello")

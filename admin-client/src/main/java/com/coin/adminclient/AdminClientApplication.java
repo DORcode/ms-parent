@@ -8,8 +8,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients
-//@EnableHystrix
-//@EnableCircuitBreaker
+@EnableHystrix
+@EnableCircuitBreaker
 public class AdminClientApplication {
 
     public static void main(String[] args) {

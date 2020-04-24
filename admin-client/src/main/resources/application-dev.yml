@@ -25,9 +25,26 @@ eureka:
 feign:
   okhttp:
     enabled: true
+  hystrix:
+    enabled: true
+
+ribbon:
+  ReadTimeout: 5000
+  ConnectTimeout: 5000
+  eager-load:
+    clients: ms-client, ms-dict, ms-auth
+    enabled: true
 
 management:
   endpoints:
     jmx:
       exposure:
         include: health, info, metrics
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
