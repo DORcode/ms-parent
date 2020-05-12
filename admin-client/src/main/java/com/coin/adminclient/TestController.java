@@ -19,6 +19,9 @@ public class TestController {
     @Autowired
     private TestService testService;
 
+    @Autowired
+    private DictService dictService;
+
     @GetMapping("hello")
     public String hello() {
         return testService.hello();
@@ -27,6 +30,11 @@ public class TestController {
     @GetMapping("/")
     public String test() {
         return "new2";
+    }
+
+    @GetMapping("/dict")
+    public Object dict() {
+        return dictService.selectSysDictById("1");
     }
 
 

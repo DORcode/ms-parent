@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coin.msdict.web.mapper.SysDictMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.coin.msdict.web.entity.SysDict">
+        <id column="ID" property="id" jdbcType="VARCHAR" />
+        <result column="CODE" property="code" jdbcType="VARCHAR" />
+        <result column="NAME" property="name" jdbcType="VARCHAR" />
+        <result column="FULL_PINYIN" property="fullPinyin" jdbcType="VARCHAR" />
+        <result column="SIMPLE_PINYIN" property="simplePinyin" jdbcType="VARCHAR" />
+        <result column="UP_CODE" property="upCode" jdbcType="VARCHAR" />
+        <result column="DESCP" property="descp" jdbcType="VARCHAR" />
+        <result column="TYPE_CODE" property="typeCode" jdbcType="VARCHAR" />
+        <result column="TYPE_NAME" property="typeName" jdbcType="VARCHAR" />
+        <result column="SEQ" property="seq" jdbcType="INTEGER" />
+        <result column="SQL_CODE" property="sqlCode" jdbcType="LONGVARCHAR" />
+        <result column="IS_USE" property="isUse" jdbcType="INTEGER" />
+        <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, CODE, NAME, FULL_PINYIN, SIMPLE_PINYIN, UP_CODE, DESCP, TYPE_CODE, TYPE_NAME, SEQ, SQL_CODE, IS_USE, CREATE_TIME, UPDATE_TIME
+    </sql>
+
+
+    <select id="selectOneSelective" parameterType="com.coin.msdict.web.vo.SysDictVo" resultType="com.coin.msdict.web.vo.SysDictVo">
+        select * from sys_dict
+        <where>
+        <if test="id != null">
+              and  ID = #{id, jdbcType=VARCHAR},
+        </if>
+        <if test="code != null">
+            and    CODE = UPPER(#{code, jdbcType=VARCHAR}),
+        </if>
+        <if test="name != null">
+            and   NAME = #{name, jdbcType=VARCHAR},
+        </if>
+        <if test="fullPinyin != null">
+            and    FULL_PINYIN = #{fullPinyin, jdbcType=VARCHAR},
+        </if>
+        <if test="simplePinyin != null">
+            and    SIMPLE_PINYIN = #{simplePinyin, jdbcType=VARCHAR},
+        </if>
+        <if test="upCode != null">
+            and    UP_CODE = #{upCode, jdbcType=VARCHAR},
+        </if>
+        <if test="descp != null">
+            and    DESCP = #{descp, jdbcType=VARCHAR},
+        </if>
+        <if test="typeCode != null">
+            and   TYPE_CODE = #{typeCode, jdbcType=VARCHAR},
+        </if>
+        <if test="typeName != null">
+            and    TYPE_NAME = #{typeName, jdbcType=VARCHAR},
+        </if>
+        <if test="seq != null">
+            and    SEQ = #{seq, jdbcType=INTEGER},
+        </if>
+        <if test="sqlCode != null">
+            and    SQL_CODE = #{sqlCode, jdbcType=LONGVARCHAR},
+        </if>
+        <if test="isUse != null">
+            and    IS_USE = #{isUse, jdbcType=INTEGER},
+        </if>
+        <if test="createTime != null">
+            and     CREATE_TIME = #{createTime, jdbcType=TIMESTAMP},
+        </if>
+        <if test="updateTime != null">
+            and    UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+        </if>
+        </where>
+    </select>
+
+    <select id="selectSysDictsPage" resultType="com.coin.msdict.web.vo.SysDictVo">
+        select * from sys_dict
+        <where>
+        <if test="sysDict.id != null">
+               and ID like concat('%',#{sysDict.id, jdbcType=VARCHAR},'%')
+        </if>
+        <if test="sysDict.code != null">
+            and CODE like concat('%', UPPER(#{sysDict.code, jdbcType=VARCHAR}),'%')
+        </if>
+        <if test="sysDict.name != null">
+            and NAME like concat('%', #{sysDict.name, jdbcType=VARCHAR},'%')
+        </if>
+        <if test="sysDict.fullPinyin != null">
+            and FULL_PINYIN like concat('%', UPPER(#{sysDict.fullPinyin, jdbcType=VARCHAR}) ,'%')
+        </if>
+        <if test="sysDict.simplePinyin != null">
+            and SIMPLE_PINYIN like concat('%', UPPER(#{sysDict.simplePinyin, jdbcType=VARCHAR}),'%')
+        </if>
+        <if test="sysDict.upCode != null">
+            and UP_CODE like concat('%',#{selectword},'%') #{sysDict.upCode, jdbcType=VARCHAR}
+        </if>
+        <if test="sysDict.descp != null">
+            and DESCP like concat('%',#{sysDict.descp, jdbcType=VARCHAR},'%')
+        </if>
+        <if test="sysDict.typeCode != null">
+            and TYPE_CODE like concat('%',#{sysDict.typeCode, jdbcType=VARCHAR},'%')
+        </if>
+        <if test="sysDict.typeName != null">
+            and TYPE_NAME like concat('%',#{sysDict.typeName, jdbcType=VARCHAR},'%')
+        </if>
+        <if test="sysDict.seq != null">
+            and SEQ = #{sysDict.seq, jdbcType=INTEGER}
+        </if>
+        <if test="sysDict.sqlCode != null">
+            and SQL_CODE like concat('%',#{sysDict.sqlCode, jdbcType=LONGVARCHAR},'%')
+        </if>
+        <if test="sysDict.isUse != null">
+            and IS_USE = #{sysDict.isUse, jdbcType=INTEGER}
+        </if>
+        <if test="sysDict.createTime != null">
+            and CREATE_TIME = #{sysDict.createTime, jdbcType=TIMESTAMP}
+        </if>
+        <if test="sysDict.updateTime != null">
+            and UPDATE_TIME = #{sysDict.updateTime, jdbcType=TIMESTAMP}
+        </if>
+        </where> order by CODE asc, SEQ asc, TYPE_CODE asc
+    </select>
+
+    <insert id="insertSelective" parameterType="com.coin.msdict.web.entity.SysDict" >
+        insert into sys_dict
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+        <if test="id != null">
+            ID,
+        </if>
+        <if test="code != null">
+            CODE,
+        </if>
+        <if test="name != null">
+            NAME,
+        </if>
+        <if test="fullPinyin != null">
+            FULL_PINYIN,
+        </if>
+        <if test="simplePinyin != null">
+            SIMPLE_PINYIN,
+        </if>
+        <if test="upCode != null">
+            UP_CODE,
+        </if>
+        <if test="descp != null">
+            DESCP,
+        </if>
+        <if test="typeCode != null">
+            TYPE_CODE,
+        </if>
+        <if test="typeName != null">
+            TYPE_NAME,
+        </if>
+        <if test="seq != null">
+            SEQ,
+        </if>
+        <if test="sqlCode != null">
+            SQL_CODE,
+        </if>
+        <if test="isUse != null">
+            IS_USE,
+        </if>
+        <if test="createTime != null">
+            CREATE_TIME,
+        </if>
+        <if test="updateTime != null">
+            UPDATE_TIME,
+        </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+        <if test="id != null">
+            {id, jdbcType=VARCHAR}},
+        </if>
+        <if test="code != null">
+            {code, jdbcType=VARCHAR}},
+        </if>
+        <if test="name != null">
+            {name, jdbcType=VARCHAR}},
+        </if>
+        <if test="fullPinyin != null">
+            {fullPinyin, jdbcType=VARCHAR}},
+        </if>
+        <if test="simplePinyin != null">
+            {simplePinyin, jdbcType=VARCHAR}},
+        </if>
+        <if test="upCode != null">
+            {upCode, jdbcType=VARCHAR}},
+        </if>
+        <if test="descp != null">
+            {descp, jdbcType=VARCHAR}},
+        </if>
+        <if test="typeCode != null">
+            {typeCode, jdbcType=VARCHAR}},
+        </if>
+        <if test="typeName != null">
+            {typeName, jdbcType=VARCHAR}},
+        </if>
+        <if test="seq != null">
+            {seq, jdbcType=INTEGER},
+        </if>
+        <if test="sqlCode != null">
+                {sqlCode, jdbcType=LONGVARCHAR},
+        </if>
+        <if test="isUse != null">
+            {isUse, jdbcType=INTEGER},
+        </if>
+        <if test="createTime != null">
+            {createTime, jdbcType=TIMESTAMP}},
+        </if>
+        <if test="updateTime != null">
+            {updateTime, jdbcType=TIMESTAMP}},
+        </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.coin.msdict.web.vo.SysDictVo">
+        update sys_dict
+        <set>
+            <if test="code != null">
+                CODE = #{code, jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                NAME = #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="fullPinyin != null">
+                FULL_PINYIN = #{fullPinyin, jdbcType=VARCHAR},
+            </if>
+            <if test="simplePinyin != null">
+                SIMPLE_PINYIN = #{simplePinyin, jdbcType=VARCHAR},
+            </if>
+            <if test="upCode != null">
+                UP_CODE = #{upCode, jdbcType=VARCHAR},
+            </if>
+            <if test="descp != null">
+                DESCP = #{descp, jdbcType=VARCHAR},
+            </if>
+            <if test="typeCode != null">
+                TYPE_CODE = #{typeCode, jdbcType=VARCHAR},
+            </if>
+            <if test="typeName != null">
+                TYPE_NAME = #{typeName, jdbcType=VARCHAR},
+            </if>
+            <if test="seq != null">
+                SEQ = #{seq, jdbcType=INTEGER},
+            </if>
+            <if test="sqlCode != null">
+                SQL_CODE = #{sqlCode, jdbcType=LONGVARCHAR},
+            </if>
+            <if test="isUse != null">
+                IS_USE = #{isUse, jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime, jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+            </if>
+        </set>
+            where  ID = #{id, jdbcType=VARCHAR}
+    </update>
+</mapper>

@@ -1,19 +1,36 @@
-server:
-  port: 7001
-
 spring:
+  profiles:
+    active: dev
+
   application:
     name: ms-dict
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    healthcheck:
-      enabled: true
-    registry-fetch-interval-seconds: 30 # À­È¡·şÎñÁĞ±í
-  instance:
-    lease-expiration-duration-in-seconds: 15 # 30³®¹ıÆÚ
-    lease-renewal-interval-in-seconds: 5 # 5ÃëÒ»´ÎĞÄÌø
-    prefer-ip-address: true
-    ip-address: localhost
+  thymeleaf:
+    suffix: .html
+    servlet:
+      content-type: text/html
+    prefix: classpath:/templates/
+    cache: false
+    mode: HTML
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  global-config:
+    db-config:
+      id-type: uuid
+      field-strategy: not_empty
+      #é©¼å³°ä¸‹åˆ’çº¿è½¬æ¢
+      column-underline: true
+      #é€»è¾‘åˆ é™¤é…ç½®
+      logic-delete-value: 0
+      logic-not-delete-value: 1
+      db-type: mysql
+    refresh: false
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+
+
+dict:
+  cache:
+    islocal: true

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--    <head th:include="head::common(title='基础数据')">-->
+    <!--        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" ></meta>-->
+    <!--    </head>-->
+    <meta charset="UTF-8">
+    <title>字典管理</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.1/lib/theme-chalk/index.css">
+    <style>
+        body {margin: 0}
+    </style>
+    <script src="https://cdn.bootcss.com/vue/2.6.11/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue-router/3.0.1/vue-router.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue-i18n/7.6.0/vue-i18n.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.1/lib/index.js"></script>
+</head>
+<body>
+<div id="app" style="height: 100%;margin: 0 auto;padding: 0;">
+    <router-view></router-view>
+
+</div>
+<template id='home'>
+    <home></home>
+</template>
+<template id='detail'>
+    <detail></detail>
+</template>
+<template id='dict'>
+    <dict></dict>
+</template>
+<template id="home-component"></template>
+<template id="detail-component"></template>
+<template id="dict-component">
+    <el-container style="height: 100vh;">
+        <el-aside width="200px;">
+            <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+                <el-submenu index="1">
+                    <template slot="title">
+                        <i class="el-icon-location"></i>
+                        <span slot="title">导航一</span>
+                    </template>
+                    <el-menu-item-group>
+                        <span slot="title">分组一</span>
+                        <el-menu-item index="1-1">选项1</el-menu-item>
+                        <el-menu-item index="1-2">选项2</el-menu-item>
+                    </el-menu-item-group>
+                    <el-menu-item-group title="分组2">
+                        <el-menu-item index="1-3">选项3</el-menu-item>
+                    </el-menu-item-group>
+                    <el-submenu index="1-4">
+                        <span slot="title">选项4</span>
+                        <el-menu-item index="1-4-1">选项1</el-menu-item>
+                    </el-submenu>
+                </el-submenu>
+                <el-menu-item index="2">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">导航二</span>
+                </el-menu-item>
+                <el-menu-item index="3" disabled>
+                    <i class="el-icon-document"></i>
+                    <span slot="title">导航三</span>
+                </el-menu-item>
+                <el-menu-item index="4">
+                    <i class="el-icon-setting"></i>
+                    <span slot="title">导航四</span>
+                </el-menu-item>
+            </el-menu>
+        </el-aside>
+        <el-container>
+            <el-header>Header</el-header>
+            <el-main>
+                <iframe :src='src1' width="100%" height="300"></iframe>
+                <el-row>
+                    <el-input></el-input>
+                </el-row>
+                <el-row>
+                    <el-table :data="dictList" border>
+                        <el-table-column prop="code" label="编码"></el-table-column>
+                        <el-table-column prop="name" label="名称"></el-table-column>
+                        <el-table-column prop="fullPinyin" label="全拼"></el-table-column>
+                        <el-table-column prop="simplePinyin" label="简称"></el-table-column>
+                        <el-table-column prop="upCode" label="上级编码"></el-table-column>
+                        <el-table-column prop="descp" label="描述"></el-table-column>
+                        <el-table-column prop="typeCode" label="类别编码"></el-table-column>
+                        <el-table-column prop="typeName" label="类别名称"></el-table-column>
+                        <el-table-column prop="seq" label="顺序"></el-table-column>
+                        <el-table-column prop="sqlCode" label="查询语句"></el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="100">
+                            <template slot-scope="scope">
+                                <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+                                <el-button type="text" size="small">编辑</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                </el-row>
+                <el-row justify="end">
+                    <el-pagination style="width: auto"
+                                   @size-change="handleSizeChange"
+                                   @current-change="handleCurrentChange"
+                                   :current-page="currentPage"
+                                   :page-sizes="[10, 20, 50, 100]"
+                                   :page-size="100"
+                                   layout="total, sizes, prev, pager, next, jumper"
+                                   :total="total">
+                    </el-pagination>
+                </el-row>
+            </el-main>
+            <el-footer style="text-align: center">字典管理后台</el-footer>
+        </el-container>
+    </el-container>
+</template>
+<!--    <script type="text/javascript" src="../js/app.js"></script>-->
+
+</body>
+<!--<script type="text/javascript" src="../js/app.js"></script>-->
+<script type="text/javascript">
+    var routes = [
+        {
+            name: 'home',
+            path: "/",
+            component: { template: "#dict" }
+        },
+        {
+            name: 'detail',
+            path: "/detail/:expertId",
+            component: { template: "#detail" }
+        },
+    ];
+    // 瀹氫箟璺敱缁勪欢
+    var router = new VueRouter({
+        routes
+    });
+
+    const global_vue = new Vue({
+        router
+    }).$mount('#app');
+    new Vue({
+        el: '#app',
+        data: {
+            visible: false,
+            name: '打开',
+            dictList: [],
+            isCollapse: false,
+            currentPage: 1,
+            total: 0
+        },
+        created() {
+            this.getDictData()
+        },
+        methods: {
+            handleSizeChange(val) {
+
+            },
+            handleCurrentChange(val) {
+
+            },
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+
+            handleClick(row) {
+                console.log(row);
+            },
+        }
+    });
+
+    Vue.component('detail', {
+        template: '#detail-component',
+        data: () => {
+            return {
+                selected: null,
+                expertId: null,
+                basicData: {},
+                mettingData: [],
+
+            }
+        },
+        computed: {
+
+        },
+        methods: {
+
+        },
+        mounted() {
+
+        }
+    });
+
+    Vue.component('dict', {
+        template: '#dict-component',
+        data: () => {
+            return {
+                dictList: [],
+                isCollapse: false,
+                currentPage: 1,
+                total: 0
+
+            }
+        },
+        computed: {
+
+        },
+        methods: {
+
+        },
+        mounted() {
+
+        }
+    });
+
+    Vue.component('home', {
+        template: '#home-component',
+        data: () => {
+            return {
+                search_value: "",
+                experts_type_value: [],
+                company_group_json: [],
+                experts_type: [
+                    {
+                        value: 'New York',
+                        label: '分类1'
+                    },
+                    {
+                        value: 'London',
+                        label: '分类2'
+                    }],
+                data_list: [],
+                delete_experts: {
+                    model_show: false,
+                    willbeDelete: null
+                },
+                total_num: 0,
+                curIndex: 1
+            }
+        },
+        watch: {
+
+        },
+        computed: {
+
+        },
+        methods: {
+
+
+        },
+        mounted() {
+
+        }
+    });
+</script>
+
+</html>

@@ -1,0 +1,16 @@
+<head th:fragment="commonHead(title)">
+    <title th:text="${title}"></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.1/lib/theme-chalk/index.css">
+    <script src="https://cdn.bootcss.com/vue/2.6.11/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue-router/3.0.1/vue-router.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue-i18n/7.6.0/vue-i18n.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.1/lib/index.js"></script>
+    <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+<!--    <script th:src="@{}"></script>-->
+    <script th:inline="javascript">
+        var staticURL=[[${#httpServletRequest.getContextPath()}]],dynamicURL=[[@{/}]],httpURL=[[@{${application.httpURL}}]];
+        console.info(staticURL);
+    </script>
+</head>

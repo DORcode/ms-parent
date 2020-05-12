@@ -20,7 +20,8 @@
         <module>ms-auth</module>
         <module>ms-client</module>
         <module>ms-server</module>
-
+        <module>ms-gateway</module>
+        <module>ms-dict</module>
         <module>admin-client</module>
     </modules>
 
@@ -34,6 +35,12 @@
         <fastjson.version>1.2.45</fastjson.version>
         <swagger.version>2.7.0</swagger.version>
         <commons.lang.version>2.6</commons.lang.version>
+        <commons.beanutils.version>1.9.3</commons.beanutils.version>
+        <commons.codec.version>1.10</commons.codec.version>
+        <lombok.version>1.16.20</lombok.version>
+        <io.jsonwebtoken>0.9.1</io.jsonwebtoken>
+        <mysql.version>8.0.19</mysql.version>
+        <dozer.version>6.2.0</dozer.version>
     </properties>
 
     <dependencies>
@@ -185,6 +192,44 @@
 <!--                <scope>test</scope>-->
 <!--            </dependency>-->
             <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatisplus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <scope>runtime</scope>
+                <version>${mysql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-freemarker</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <!--rapid-freemarker 模板继承框架-->
+            <dependency>
+                <groupId>com.googlecode.rapid-framework</groupId>
+                <artifactId>rapid-core</artifactId>
+                <version>4.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-thymeleaf</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <optional>true</optional>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.dozermapper</groupId>
+                <artifactId>dozer-spring-boot-starter</artifactId>
+                <version>${dozer.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
@@ -200,9 +245,20 @@
                 <version>${mybatisplus.version}</version>
             </dependency>
             <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons.beanutils.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <optional>true</optional>
+                <version>${lombok.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
@@ -213,6 +269,16 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${io.jsonwebtoken}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons.codec.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
