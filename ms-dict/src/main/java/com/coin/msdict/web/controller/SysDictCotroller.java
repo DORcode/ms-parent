@@ -2,6 +2,8 @@ package com.coin.msdict.web.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.coin.msdict.config.dict.DictLocalCache;
+import com.coin.msdict.util.ExcelUtil;
+import com.coin.msdict.web.entity.SysDict;
 import com.coin.msdict.web.service.SysDictService;
 import com.coin.util.BaseException;
 import com.coin.msdict.web.vo.SysDictVo;
@@ -22,9 +24,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
 * @ClassName SysDictCotroller
@@ -46,7 +52,7 @@ public class SysDictCotroller {
     @Autowired
     private SysDictService sysDictService;
 
-    @RequestMapping("test")
+    @GetMapping("test")
     public Object test() {
         return dictLocalCache.get();
     }
@@ -198,7 +204,7 @@ public class SysDictCotroller {
     /**
      * @MethodName importSysDicts
      * @Description 导入数据
-     * @param sysDictVos
+     * @param
      * @return com.coin.util.Result
      * @throws
      * @author kh
@@ -206,7 +212,22 @@ public class SysDictCotroller {
      */
     @PostMapping("importSysDicts")
     @ApiOperation(value="导入数据")
-    public Result importSysDicts(@RequestBody List<SysDictVo> sysDictVos) throws BaseException {
+    public Result importSysDicts(MultipartFile file) throws BaseException, Exception {
+
+        List<List<String>> lists = ExcelUtil.readExcel(file.getInputStream(), 0);
+        sysDictService.insertImport(lists);
         return Result.success();
+    }
+
+    @GetMapping("selectItem/{code}/{typeCode}")
+    @ApiOperation(value = "查询字典")
+    public SysDict selectItem(@PathVariable("code") String code, @PathVariable("typeCode") String typeCode) {
+        return dictLocalCache.getDictItem(code.toUpperCase() + "_" + typeCode.toUpperCase());
+    }
+
+    @GetMapping("selectItems/{code}")
+    @ApiOperation(value = "查询字典列表")
+    public Set<SysDict> selectItems(@PathVariable("code") String code) {
+        return dictLocalCache.getDictItems(code.toUpperCase());
     }
 }

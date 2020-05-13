@@ -215,6 +215,19 @@
         </trim>
     </insert>
 
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO sys_dict(ID, CODE, NAME, FULL_PINYIN, SIMPLE_PINYIN, UP_CODE,
+        DESCP, TYPE_CODE, TYPE_NAME, SEQ, SQL_CODE, IS_USE, CREATE_TIME, UPDATE_TIME)
+        VALUES
+        <foreach collection="list" close="" index="index" item="item" open="" separator=",">
+            (#{item.id, jdbcType=VARCHAR},#{item.code, jdbcType=VARCHAR},#{item.name, jdbcType=VARCHAR},
+            #{item.fullPinyin, jdbcType=VARCHAR},#{item.simplePinyin, jdbcType=VARCHAR},
+            #{item.upCode, jdbcType=VARCHAR},#{item.descp, jdbcType=VARCHAR},#{item.typeCode, jdbcType=VARCHAR},
+            #{item.typeName, jdbcType=VARCHAR},#{item.seq, jdbcType=INTEGER},#{item.sqlCode, jdbcType=VARCHAR},
+            #{item.isUse, jdbcType=INTEGER},#{item.createTime, jdbcType=TIMESTAMP},#{item.updateTime, jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.coin.msdict.web.vo.SysDictVo">
         update sys_dict
         <set>

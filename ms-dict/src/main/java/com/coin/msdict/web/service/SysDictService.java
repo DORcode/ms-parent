@@ -119,4 +119,15 @@ public interface SysDictService extends IService<SysDict> {
     */
    int insertSysDicts(List<SysDictVo> sysDictList) throws BaseException;
 
+   /**
+    * @MethodName insertImport
+    * @Description 保存导入
+    * @param lists
+    * @return int
+    * @throws
+    * @author kh
+    * @date 2020/5/13 12:04
+    */
+   int insertImport(List<List<String>> lists) throws BaseException;
+
  }

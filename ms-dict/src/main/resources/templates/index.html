@@ -3,7 +3,10 @@
     <head th:include="head :: commonHead('字典页面')">
     </head>
 <body>
-    <div id="app" style="height: 100%;margin: 0 auto;padding: 0;">
+    <div id="app" style="height: 100%;margin: 0 auto;padding: 0;" v-loading="loading">
+        <el-row style="margin-bottom: 20px; margin-top: 5px;margin-left: 30px;">
+            <span>字典页面</span>
+        </el-row>
         <el-row>
             <el-form :model="dictQuery" label-width="100px" size="small">
                 <el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
@@ -50,8 +53,8 @@
                     </el-form-item>
                 </el-col>
             </el-form>
-
         </el-row>
+
         <el-row style="text-align: right; margin-right: 20px;">
             <el-button size="small" type="danger" @click="resetQueryForm('ruleForm')">重置</el-button>
             <el-button size="small" type="primary" @click="addQueryClick">确 定</el-button>
@@ -60,11 +63,24 @@
         <el-row style="margin-bottom: 5px; margin-top: 5px;margin-left: 30px;">
             <el-button type="primary" plain icon="el-icon-plus" size="small" @click="addClick">新增</el-button>
             <el-button type="danger" plain icon="el-icon-minus" size="small" @click.native="deleteClicks">删除</el-button>
-            <el-button type="primary" plain icon="el-icon-upload2" size="small" @click.native="importClick">导入</el-button>
+            <el-upload
+                    style="display: inline-block"
+                    class="upload-demo"
+                    ref="upload"
+                    accept=".xls,.xlsx"
+                    :multiple="false"
+                    :show-file-list="false"
+                    http-request="importClick">
+                <el-button slot="trigger" size="small" type="primary" plain>导入</el-button>
+            </el-upload>
             <el-button type="primary" plain icon="el-icon-download" size="small" @click.native="exportClick">导出</el-button>
         </el-row>
         <el-row>
-            <el-table :data="dictList" border>
+            <el-table :data="dictList" border  @selection-change="handleSelectionChange">
+                <el-table-column
+                        type="selection"
+                        width="55">
+                </el-table-column>
                 <el-table-column prop="code" label="字典编码"></el-table-column>
                 <el-table-column prop="name" label="名称"></el-table-column>
                 <el-table-column prop="fullPinyin" label="全拼"></el-table-column>
@@ -144,7 +160,7 @@
             <span slot="footer" class="dialog-footer">
                 <el-button type="danger" @click="resetForm('ruleForm')">重置</el-button>
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addSaveClick('ruleForm')">确 定</el-button>
+                <el-button type="primary" @click="addSaveClick('ruleForm')" :loading="addLoading">确 定</el-button>
               </span>
         </el-dialog>
     </div>
@@ -167,12 +183,15 @@
     var app = new Vue({
         el: '#app',
         data: {
+            loading: false,
+            addLoading: false,
             name: '打开',
             dictList: [],
             isCollapse: false,
             size: 10,
             currentPage: 1,
             total: 0,
+            selectDicts: [],
             dictQuery: {},
             dictForm: {},
             dialogName: '新增',
@@ -254,6 +273,9 @@
                 this.dictQuery.size = this.size;
                 this.getDictData();
             },
+            handleSelectionChange(val) {
+                this.selectDicts = val;
+            },
             handleSizeChange(val) {
                 this.dictQuery.current = this.currentPage;
                 this.dictQuery.size = val;
@@ -280,12 +302,15 @@
             },
             addSaveClick(ref) {
                 let _this = this;
+
                 this.$refs[ref].validate((valid) => {
                     if (valid) {
+                        this.addLoading = true;
                         if(!this.dictForm.id) {
                             axios.post('/api/sysdict/insertSysDict', JSON.stringify(this.dictForm),
                                 {headers: {'Content-Type': 'application/json;charset=utf-8'}})
                                 .then(function (response) {
+                                    _this.addLoading = false;
                                     if (response.data.success) {
                                         _this.$message({
                                             type: 'success',
@@ -300,12 +325,14 @@
                                     }
                                 })
                                 .catch(function (error) {
+                                    _this.addLoading = false;
                                     _this.$message.info(error);
                                 });
                         } else {
                             axios.post('/api/sysdict/updateSysDict', this.dictForm,
                                 {headers: {'Content-Type': 'application/json;charset=utf-8'}})
                                 .then(function (response) {
+                                    _this.addLoading = false;
                                     if (response.data.success) {
                                         _this.$message({
                                             type: 'success',
@@ -320,6 +347,7 @@
                                     }
                                 })
                                 .catch(function (error) {
+                                    _this.addLoading = false;
                                     _this.$message(error);
                                 });
                         }
@@ -335,8 +363,29 @@
                 _this.$refs[formName].resetFields();
                 _this.dictForm = {};
             },
-            importClick() {
-
+            importClick(param) {
+                this.loading = true;
+                let file = param.file;
+                let formData = new FormData();
+                formData.append("file", file);
+                axios.post('/api/sysdict/importSysDicts', formData,
+                    {headers: {'Content-Type': 'multipart/form-data'}})
+                    .then(function (response) {
+                        this.loading = false;
+                        if (response.data.success) {
+                            _this.$message({
+                                type: 'success',
+                                message: response.data.msg
+                            });
+                            _this.getDictData();
+                        } else {
+                            _this.$message(response.data.msg);
+                        }
+                    })
+                    .catch(function (error) {
+                        this.loading = false;
+                        _this.$message(error);
+                    });
             },
             exportClick() {
 
@@ -349,9 +398,11 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
+                    this.loading = true;
                     axios.get(`/api/sysdict/deleteSysDict/${id}`)
                         .then(function (response) {
                             if(response.data.success) {
+                                this.loading = false;
                                 _this.$message({
                                     type: 'success',
                                     message: response.data.msg
@@ -363,6 +414,7 @@
                             }
                         })
                         .catch(function (error) {
+                            this.loading = false;
                             console.log(error);
                         });
 
@@ -376,6 +428,48 @@
             },
             deleteClicks() {
 
+                let _this = this;
+
+                if(!this.selectDicts || this.selectDicts.length == 0) {
+                    this.$message({
+                        type: 'warning',
+                        message: '请选择数据！'
+                    });
+                    return;
+                }
+
+                this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.loading = true;
+                    axios.post('/api/sysdict/deleteSysDicts', this.selectDicts,
+                        {headers: {'Content-Type': 'application/json;charset=utf-8'}})
+                        .then(function (response) {
+                            this.loading = false;
+                            if (response.data.success) {
+                                _this.$message({
+                                    type: 'success',
+                                    message: response.data.msg
+                                });
+                                _this.getDictData();
+                            } else {
+                                _this.$message(response.data.msg);
+                            }
+                        })
+                        .catch(function (error) {
+                            this.loading = false;
+                            _this.$message(error);
+                        });
+
+                }).catch((e) => {
+                    console.log(e);
+                    this.$message({
+                        type: 'info',
+                        message: e
+                    });
+                });
             },
             editClick(row) {
                 this.dialogVisible = true;
@@ -383,11 +477,10 @@
             },
             getDictData() {
                 var _this=this;
-                // if(this.dictQuery.isUse) {
-                //     this.dictQuery.isUse = Number(this.dictQuery.isUse + '');
-                // }
+                this.loading = true;
                 axios.post('/api/sysdict/selectSysDictsPage', this.dictQuery)
                     .then(function (response) {
+                        _this.loading = false;
                         _this.dictList = response.data.data.records;
                         _this.total = response.data.data.total;
                         _this.$message({
@@ -396,6 +489,7 @@
                         });
                     })
                     .catch(function (error) {
+                        _this.loading = false;
                         console.log(error);
                     });
             }

@@ -23,15 +23,15 @@ public interface CacheInterface {
 
     void add(SysDict sysDict);
 
+    void add(List<SysDict> sysDicts);
+
     void update(SysDict sysDict);
 
     void remove(SysDict sysDict);
 
+    void remove(List<SysDict> sysDicts);
+
     void clear();
-
-    Set<SysDict> getList(String key);
-
-    SysDict get(String key);
 
     Map get();
 

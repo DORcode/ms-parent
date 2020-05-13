@@ -55,6 +55,8 @@ public interface SysDictMapper extends BaseMapper<SysDict> {
     */
     int insertSelective(SysDict sysDict);
 
+    int insertBatch(List<SysDict> sysDicts);
+
     /**
     * @MethodName updateByPrimaryKeySelective
     * @Description TODO

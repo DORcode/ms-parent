@@ -25,8 +25,10 @@ import com.coin.msdict.web.dto.SysDictDto;
 import lombok.extern.slf4j.Slf4j;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
 * @ClassName SysDictServiceImpl
@@ -129,12 +131,23 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
      */
     @Override
     public int deleteSysDicts(List<SysDictVo> sysDictList) throws BaseException {
-        return 1;
+        List<String> ids = new ArrayList<>();
+        List<SysDict> sds = new ArrayList<>();
+        for(SysDictVo sd : sysDictList) {
+            ids.add(sd.getId());
+            SysDict sysDict = new SysDict();
+            BeanUtil.copyProperties(sysDict, sd);
+            sds.add(sysDict);
+        }
+        sysDictMapper.deleteBatchIds(ids);
+
+        dictLocalCache.remove(sds);
+        return sysDictList.size();
     }
 
     /**
      * @MethodName updateSysDict
-     * @Description TODO
+     * @Description 存在漏洞，如果修改了type_code或者code，需要传回来，将缓存中的删掉
      * @param sysDict
      * @return
      * @throws BaseException
@@ -215,5 +228,47 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
             insertSysDict(sysDict);
         }
         return sysDictList.size();
+    }
+
+    /**
+     * @MethodName insertImport
+     * @Description 导出数据
+     * @param lists
+     * @return int
+     * @throws
+     * @author kh
+     * @date 2020/5/13 15:16
+     */
+    @Override
+    public int insertImport(List<List<String>> lists) throws BaseException {
+        List<SysDict> dicts = new ArrayList<SysDict>();
+        LocalDateTime now = LocalDateTime.now();
+        for(List<String> list : lists) {
+            SysDict sysDict = new SysDict();
+            sysDict.setId(UUID.randomUUID().toString().replaceAll("-", "").toLowerCase());
+            sysDict.setCode(list.get(0));
+            sysDict.setName(list.get(1));
+            sysDict.setFullPinyin(list.get(2));
+            sysDict.setSimplePinyin(list.get(3));
+            sysDict.setUpCode(list.get(4));
+            sysDict.setDescp(list.get(5));
+            sysDict.setTypeCode(list.get(6));
+            sysDict.setTypeName(list.get(7));
+            if(StringUtils.isNotEmpty(list.get(8))) {
+                double v = Double.parseDouble(list.get(8));
+                sysDict.setSeq(new Double(v).intValue());
+            }
+            sysDict.setSqlCode(list.get(9));
+            if(StringUtils.isNotEmpty(list.get(10))) {
+                double w = Double.parseDouble(list.get(10));
+                sysDict.setIsUse(new Double(w).intValue());
+            }
+            sysDict.setCreateTime(now);
+            sysDict.setUpdateTime(now);
+            dicts.add(sysDict);
+        }
+        sysDictMapper.insertBatch(dicts);
+        dictLocalCache.add(dicts);
+        return dicts.size();
     }
 }

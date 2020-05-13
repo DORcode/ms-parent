@@ -93,6 +93,13 @@ public class DictLocalCache implements CacheInterface {
         }
     }
 
+    @Override
+    public void add(List<SysDict> sysDicts) {
+        for (SysDict sd : sysDicts) {
+            add(sd);
+        }
+    }
+
     private void add(String key, SysDict sd) {
         try {
             Set<SysDict> set = getList(key);
@@ -232,19 +239,26 @@ public class DictLocalCache implements CacheInterface {
     }
 
     @Override
+    public void remove(List<SysDict> sysDicts) {
+        for(SysDict sd : sysDicts) {
+            remove(sd);
+        }
+    }
+
+    @Override
     public void clear() {
         CACHELISTMAP.clear();
         SQLS.clear();
     }
 
-    @Override
-    public Set<SysDict> getList(String key) {
+    // @Override
+    private Set<SysDict> getList(String key) {
         return CACHELISTMAP.get(key);
 
     }
 
-    @Override
-    public SysDict get(String key) {
+    // @Override
+    private SysDict get(String key) {
         Iterator<SysDict> iterator = getList(key).iterator();
         if (iterator.hasNext()) {
             return iterator.next();
@@ -258,11 +272,17 @@ public class DictLocalCache implements CacheInterface {
         return CACHELISTMAP;
     }
 
+    private Set<SysDict> gets(String key) {
+        Set<SysDict> sysDicts = new HashSet<>();
+        return CACHELISTMAP.getOrDefault(key, sysDicts);
+    }
+
     @Override
     public Set<SysDict> getDictItems(String key) {
         rwl.readLock().lock();
+
         try {
-            return CACHELISTMAP.get(key);
+            return gets(key);
         } finally {
             rwl.readLock().unlock();
         }
@@ -272,11 +292,11 @@ public class DictLocalCache implements CacheInterface {
     public SysDict getDictItem(String key) {
         rwl.readLock().lock();
         try {
-            Iterator<SysDict> iterator = getList(key).iterator();
+            Iterator<SysDict> iterator = gets(key).iterator();
             if (iterator.hasNext()) {
                 return iterator.next();
             } else {
-                return null;
+                return new SysDict();
             }
         } finally {
             rwl.readLock().unlock();
