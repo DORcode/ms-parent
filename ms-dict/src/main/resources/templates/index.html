@@ -70,7 +70,7 @@
                     accept=".xls,.xlsx"
                     :multiple="false"
                     :show-file-list="false"
-                    http-request="importClick">
+                    :http-request="importClick">
                 <el-button slot="trigger" size="small" type="primary" plain>导入</el-button>
             </el-upload>
             <el-button type="primary" plain icon="el-icon-download" size="small" @click.native="exportClick">导出</el-button>
@@ -321,7 +321,10 @@
                                         _this.resetForm('ruleForm');
                                         _this.getDictData();
                                     } else {
-                                        _this.$message(response.data.msg);
+                                        _this.$message({
+                                            type: 'error',
+                                            message: response.data.msg
+                                        });
                                     }
                                 })
                                 .catch(function (error) {
@@ -343,7 +346,10 @@
                                         _this.dictForm = {};
                                         _this.getDictData();
                                     } else {
-                                        _this.$message(response.data.msg);
+                                        _this.$message({
+                                            type: 'error',
+                                            message: response.data.msg
+                                        });
                                     }
                                 })
                                 .catch(function (error) {
@@ -364,6 +370,7 @@
                 _this.dictForm = {};
             },
             importClick(param) {
+                let _this = this;
                 this.loading = true;
                 let file = param.file;
                 let formData = new FormData();
@@ -371,7 +378,7 @@
                 axios.post('/api/sysdict/importSysDicts', formData,
                     {headers: {'Content-Type': 'multipart/form-data'}})
                     .then(function (response) {
-                        this.loading = false;
+                        _this.loading = false;
                         if (response.data.success) {
                             _this.$message({
                                 type: 'success',
@@ -379,11 +386,15 @@
                             });
                             _this.getDictData();
                         } else {
-                            _this.$message(response.data.msg);
+                            _this.$message({
+                                type: 'error',
+                                message: response.data.msg
+                            });
                         }
                     })
                     .catch(function (error) {
-                        this.loading = false;
+                        console.log('重复');
+                        _this.loading = false;
                         _this.$message(error);
                     });
             },
@@ -401,8 +412,8 @@
                     this.loading = true;
                     axios.get(`/api/sysdict/deleteSysDict/${id}`)
                         .then(function (response) {
+                            this.loading = false;
                             if(response.data.success) {
-                                this.loading = false;
                                 _this.$message({
                                     type: 'success',
                                     message: response.data.msg
@@ -410,7 +421,10 @@
                                 _this.getDictData();
 
                             } else {
-                                _this.$message('fail'. response.data.msg);
+                                _this.$message({
+                                    type: 'error',
+                                    message: response.data.msg
+                                });
                             }
                         })
                         .catch(function (error) {
@@ -455,7 +469,10 @@
                                 });
                                 _this.getDictData();
                             } else {
-                                _this.$message(response.data.msg);
+                                _this.$message({
+                                    type: 'error',
+                                    message: response.data.msg
+                                });
                             }
                         })
                         .catch(function (error) {

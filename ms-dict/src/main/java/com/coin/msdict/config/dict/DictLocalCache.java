@@ -95,8 +95,13 @@ public class DictLocalCache implements CacheInterface {
 
     @Override
     public void add(List<SysDict> sysDicts) {
-        for (SysDict sd : sysDicts) {
-            add(sd);
+        rwl.writeLock().lock();
+        try {
+            for (SysDict sd : sysDicts) {
+                add(sd);
+            }
+        } finally {
+            rwl.writeLock().unlock();
         }
     }
 
@@ -164,7 +169,7 @@ public class DictLocalCache implements CacheInterface {
                         Iterator<SysDict> iterator = set.iterator();
                         while (iterator.hasNext()) {
                             SysDict next = iterator.next();
-                            if (next.getCode().equals(sysDict.getCode()) && next.getTypeCode().equals(sysDict.getTypeCode())) {
+                            if (StringUtils.isNotEmpty(next.getId()) && next.getId().equals(sysDict.getId()) || next.getCode().equals(sysDict.getCode()) && next.getTypeCode().equals(sysDict.getTypeCode())) {
                                 iterator.remove();
                             }
                         }
@@ -191,7 +196,7 @@ public class DictLocalCache implements CacheInterface {
                     Iterator<SysDict> iterator = SQLS.iterator();
                     while (iterator.hasNext()) {
                         SysDict next = iterator.next();
-                        if (next.getCode().equals(sysDict.getCode()) & next.getTypeCode().equals(sysDict.getTypeCode())) {
+                        if (StringUtils.isNotEmpty(next.getId()) && next.getId().equals(sysDict.getId()) || next.getCode().equals(sysDict.getCode()) & next.getTypeCode().equals(sysDict.getTypeCode())) {
                             iterator.remove();
                         }
                     }
@@ -215,7 +220,7 @@ public class DictLocalCache implements CacheInterface {
                 Iterator<SysDict> iterator = sysDicts.iterator();
                 while (iterator.hasNext()) {
                     SysDict next = iterator.next();
-                    if (next.getCode().equals(sysDict.getCode()) && next.getTypeCode().equals(sysDict.getTypeCode()) || next.getIsUse() == 0) {
+                    if (StringUtils.isNotEmpty(next.getId()) && next.getId().equals(sysDict.getId()) || next.getCode().equals(sysDict.getCode()) && next.getTypeCode().equals(sysDict.getTypeCode()) || next.getIsUse() == 0) {
                         iterator.remove();
                     }
                 }
