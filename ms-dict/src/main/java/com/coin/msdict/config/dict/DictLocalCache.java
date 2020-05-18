@@ -2,6 +2,8 @@ package com.coin.msdict.config.dict;
 
 import com.coin.msdict.web.entity.SysDict;
 import com.coin.msdict.web.service.SysDictService;
+import com.coin.msdict.web.vo.SysDictVo;
+import com.coin.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -262,7 +264,6 @@ public class DictLocalCache implements CacheInterface {
 
     }
 
-    // @Override
     private SysDict get(String key) {
         Iterator<SysDict> iterator = getList(key).iterator();
         if (iterator.hasNext()) {
@@ -288,6 +289,8 @@ public class DictLocalCache implements CacheInterface {
 
         try {
             return gets(key);
+
+            // 如果没有需要处理，从数据库中查询，目前假设，如果是sql字典，根据code查询只有一条，如果是非sql字典，至少一条，不存在sql和字典并存的情况
         } finally {
             rwl.readLock().unlock();
         }
@@ -301,6 +304,20 @@ public class DictLocalCache implements CacheInterface {
             if (iterator.hasNext()) {
                 return iterator.next();
             } else {
+
+//                SysDictVo sysDict = new SysDictVo();
+//                // 这样拆不合适，code中有下划线
+//                sysDict.setCode(key.split("_")[0]);
+//                sysDict.setTypeCode(key.split("_")[1]);
+//                sysDict.setIsUse(1);
+//                SysDictVo sysDictVo = sysDictService.selectSysDict(sysDict);
+//                if(!Objects.isNull(sysDict)) {
+//                    SysDict sysDict1 = new SysDict();
+//                    BeanUtil.copyProperties(sysDict1, sysDictVo);
+//                    rwl.readLock().unlock();
+//                    add(sysDict1);
+//                    return sysDict1;
+//                }
                 return new SysDict();
             }
         } finally {
