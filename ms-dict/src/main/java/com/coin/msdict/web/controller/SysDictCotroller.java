@@ -222,7 +222,7 @@ public class SysDictCotroller {
     @GetMapping("selectItem/{code}/{typeCode}")
     @ApiOperation(value = "查询字典")
     public SysDict selectItem(@PathVariable("code") String code, @PathVariable("typeCode") String typeCode) {
-        return dictLocalCache.getDictItem(code.toUpperCase() + "_" + typeCode.toUpperCase());
+        return dictLocalCache.getDictItem(code.toUpperCase(), typeCode.toUpperCase());
     }
 
     @GetMapping("selectItems/{code}")

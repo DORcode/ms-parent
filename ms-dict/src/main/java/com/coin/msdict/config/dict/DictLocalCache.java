@@ -297,10 +297,10 @@ public class DictLocalCache implements CacheInterface {
     }
 
     @Override
-    public SysDict getDictItem(String key) {
+    public SysDict getDictItem(String code, String type) {
         rwl.readLock().lock();
         try {
-            Iterator<SysDict> iterator = gets(key).iterator();
+            Iterator<SysDict> iterator = gets(code + "_" + type).iterator();
             if (iterator.hasNext()) {
                 return iterator.next();
             } else {

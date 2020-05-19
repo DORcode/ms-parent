@@ -35,7 +35,7 @@ public interface CacheInterface {
 
     Map get();
 
-    Set<SysDict> getDictItems(String key);
+    Set<SysDict> getDictItems(String code);
 
-    SysDict getDictItem(String key);
+    SysDict getDictItem(String code, String type);
 }
