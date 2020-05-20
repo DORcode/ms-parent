@@ -97,6 +97,16 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
         return page.setRecords(sysDictMapper.selectSysDictsPage(page, sysDict));
     }
 
+    @Override
+    public List<SysDict> selectSysDicts(SysDict sysDict) throws BaseException {
+        QueryWrapper<SysDict> wrapper = new QueryWrapper<>();
+        wrapper.lambda()
+                .eq(SysDict::getCode, sysDict.getCode())
+                .and(c -> c.eq(SysDict::getIsUse, sysDict.getIsUse()));
+        List<SysDict> list = list(wrapper);
+        return list;
+    }
+
     /**
      * @MethodName deleteSysDictById
      * @Description TODO

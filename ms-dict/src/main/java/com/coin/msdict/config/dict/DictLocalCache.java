@@ -283,14 +283,32 @@ public class DictLocalCache implements CacheInterface {
         return CACHELISTMAP.getOrDefault(key, sysDicts);
     }
 
+    private List<SysDict> selectList(String code) {
+        SysDict sysDict = new SysDict();
+        sysDict.setCode(code);
+        sysDict.setIsUse(1);
+        List<SysDict> sysDicts = sysDictService.selectSysDicts(sysDict);
+        return sysDicts;
+    }
+
     @Override
-    public Set<SysDict> getDictItems(String key) {
+    public Set<SysDict> getDictItems(String code) {
         rwl.readLock().lock();
-
         try {
-            return gets(key);
+            Set<SysDict> sysDicts = gets(code);
+            if(CollectionUtils.isEmpty(sysDicts)) {
+                List<SysDict> dicts = selectList(code);
+                if(CollectionUtils.isNotEmpty(dicts)) {
+                   if(dicts.size() == 1) {
+                       add(dicts.get(0));
+                   } else {
+                       add(dicts);
+                   }
+                }
+                return gets(code);
+            }
+            return sysDicts;
 
-            // 如果没有需要处理，从数据库中查询，目前假设，如果是sql字典，根据code查询只有一条，如果是非sql字典，至少一条，不存在sql和字典并存的情况
         } finally {
             rwl.readLock().unlock();
         }
@@ -304,20 +322,26 @@ public class DictLocalCache implements CacheInterface {
             if (iterator.hasNext()) {
                 return iterator.next();
             } else {
-
-//                SysDictVo sysDict = new SysDictVo();
-//                // 这样拆不合适，code中有下划线
-//                sysDict.setCode(key.split("_")[0]);
-//                sysDict.setTypeCode(key.split("_")[1]);
-//                sysDict.setIsUse(1);
-//                SysDictVo sysDictVo = sysDictService.selectSysDict(sysDict);
-//                if(!Objects.isNull(sysDict)) {
-//                    SysDict sysDict1 = new SysDict();
-//                    BeanUtil.copyProperties(sysDict1, sysDictVo);
-//                    rwl.readLock().unlock();
-//                    add(sysDict1);
-//                    return sysDict1;
-//                }
+                List<SysDict> sysDicts = selectList(code);
+                if(CollectionUtils.isNotEmpty(sysDicts)) {
+                    if(sysDicts.size() == 1) {
+                        SysDict sysDict = sysDicts.get(0);
+                        rwl.readLock().unlock();
+                        add(sysDict);
+                        if(StringUtils.isNotEmpty(sysDict.getTypeCode())) {
+                            return get(code + "_" + type);
+                        } else {
+                            return sysDict;
+                        }
+                    } else {
+                        add(sysDicts);
+                        for(SysDict sd : sysDicts) {
+                            if(sd.getTypeCode().equals(code) && sd.getTypeCode().equals(type)) {
+                                return sd;
+                            }
+                        }
+                    }
+                }
                 return new SysDict();
             }
         } finally {

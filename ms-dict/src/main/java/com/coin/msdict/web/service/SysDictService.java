@@ -53,6 +53,9 @@ public interface SysDictService extends IService<SysDict> {
     */
     IPage<SysDictVo> selectSysDictsPage(SysDictPo sysDict) throws BaseException;
 
+    List<SysDict> selectSysDicts(SysDict sysDict) throws BaseException;
+
+
    /**
    * @MethodName deleteSysDict
    * @Description TODO
