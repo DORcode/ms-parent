@@ -42,6 +42,8 @@
         <io.jsonwebtoken>0.9.1</io.jsonwebtoken>
         <mysql.version>8.0.19</mysql.version>
         <dozer.version>6.2.0</dozer.version>
+        <spring-security-oauth2.version>2.4.0.RELEASE</spring-security-oauth2.version>
+        <spring-security-oauth2-autoconfigure.version>2.3.0.RELEASE</spring-security-oauth2-autoconfigure.version>
     </properties>
 
     <dependencies>
@@ -315,6 +317,33 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>3.15</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.security.oauth</groupId>
+                <artifactId>spring-security-oauth2</artifactId>
+                <version>${spring-security-oauth2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security.oauth.boot</groupId>
+                <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+                <version>${spring-security-oauth2-autoconfigure.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-jwt</artifactId>
+                <version>1.1.0.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>8.2.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
