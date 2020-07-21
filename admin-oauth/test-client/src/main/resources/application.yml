@@ -1,0 +1,30 @@
+server:
+  port: 8280
+
+security:
+  oauth2:
+    client:
+      messaging-client-auth-code:
+        client-id: ms-client
+        client-secret: aa
+        grant-type: authorization_code
+        user-authorization-uri: http://auth-server:8090/oauth/authorize
+        access-token-uri: http://auth-server:8090/oauth/token
+        scope: message.read, message.write
+        pre-established-redirect-uri: http://localhost:8080/authorized
+        use-current-uri: false
+      messaging-client-client-creds:
+        client-id: ms-client
+        client-secret: aa
+        grant-type: client_credentials
+        access-token-uri: http://auth-server:8090/oauth/token
+        scope: message.read, message.write
+      messaging-client-password:
+        client-id: ms-client
+        client-secret: aa
+        grant-type: password
+        access-token-uri: http://auth-server:8090/oauth/token
+        scope: message.read, message.write
+
+messages:
+  base-uri: http://localhost:8091/messages
