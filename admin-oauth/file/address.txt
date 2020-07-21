@@ -1,4 +1,6 @@
 https://mp.weixin.qq.com/s/5iiISiDm4pDQmRjf4Q4x0A
+https://gitee.com/zlt2000/microservices-platform.git
+
 https://www.cnblogs.com/shenjixiaodao/p/7660845.html
 https://segmentfault.com/a/1190000016583573
 https://www.cnblogs.com/cjsblog/p/10548022.html
@@ -13,3 +15,5 @@ https://github.com/gzmuSoft/authorization-server
 https://zhuanlan.zhihu.com/p/88421654
 
 https://www.jianshu.com/p/ad99d9486785
+
+https://echocow.cn/articles/2019/07/30/1564498598952.html 手机 邮箱登录验证
