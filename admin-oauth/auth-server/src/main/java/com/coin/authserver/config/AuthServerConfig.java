@@ -54,8 +54,8 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 //    @Autowired
 //    DataSource dataSource;
 
-//    @Autowired
-//    PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     ClientDetailsService clientDetailsService;
@@ -78,7 +78,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
             .withClient("ms-client")
             .authorizedGrantTypes("authorization_code", "implicit", "refresh_token", "client_credentials", "password")
             .scopes("read", "write")
-            .secret(passwordEncoder().encode("aa"))
+            .secret(passwordEncoder.encode("aa"))
             .redirectUris("http://localhost:8280/authorized")
             ;
     }
@@ -142,10 +142,10 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
         return tokenStore;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//    }
 
     @Bean
     public JWKSet jwkSet() {

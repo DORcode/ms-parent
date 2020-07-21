@@ -12,8 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.*;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @ClassName SecurityConfig
@@ -57,17 +61,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected UserDetailsService userDetailsService() {
         // return new JdbcUserDetailsManager(this.dataSource);
+
         return new InMemoryUserDetailsManager(
-            User.withDefaultPasswordEncoder()
+            User.builder()
                 .username("user")
-                .password("pwd")
+                .password(passwordEncoder().encode("pwd"))
                 .roles("USER")
                 .build()
         );
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        String idForEncode = "bcrypt";
+        Map encoders = new HashMap<>();
+        encoders.put(idForEncode, new BCryptPasswordEncoder());
+        encoders.put("noop", NoOpPasswordEncoder.getInstance());
+        encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
+        encoders.put("scrypt", new SCryptPasswordEncoder());
+        encoders.put("sha256", new StandardPasswordEncoder());
+
+        PasswordEncoder passwordEncoder =
+                new DelegatingPasswordEncoder(idForEncode, encoders);
+        return passwordEncoder;
+    }
 }
