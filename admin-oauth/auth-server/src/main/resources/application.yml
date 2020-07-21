@@ -1,2 +1,14 @@
 server:
   port: 8090
+
+#redis:
+#  database: 2
+#  host: localhost
+#  port: 32768
+#  password: 1qaz@WSX
+#  jedis:
+#    pool:
+#      max-active: 8
+#      max-idle: 8
+#      min-idle: 0
+#  timeout: 100ms

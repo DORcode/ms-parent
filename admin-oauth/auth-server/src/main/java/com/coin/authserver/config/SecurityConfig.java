@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 /**
@@ -23,31 +25,32 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-    }
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.formLogin()
+//                .loginPage("/login")
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers("/login").permitAll()
+//                .anyRequest()
+//                .authenticated()
+//                .and().csrf().disable().cors();
+//    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        super.configure(web);
+        web.ignoring().antMatchers("/assets/**", "/css/**", "/images/**");
     }
 
 //    @Override
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.authenticationProvider(cu )
+//        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
 //    }
-
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
 
     @Bean
     @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Bean
@@ -62,4 +65,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .build()
         );
     }
+
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 }

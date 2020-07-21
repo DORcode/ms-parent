@@ -33,7 +33,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @EnableOAuth2Sso
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	// @formatter:off
 	@Override
 	public void configure(WebSecurity web) {
 		web
@@ -54,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.loginPage("/login")
 				.failureUrl("/login-error")
 				.permitAll();
+		http.logout().logoutSuccessUrl("服务端登出");
 	}
 	// @formatter:on
 

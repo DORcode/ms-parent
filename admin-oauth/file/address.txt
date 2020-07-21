@@ -5,3 +5,11 @@ https://www.cnblogs.com/cjsblog/p/10548022.html
 https://www.cnblogs.com/cjsblog/p/9184173.html
 https://www.cnblogs.com/cjsblog/p/9174797.html
 https://gitee.com/zlt2000/microservices-platform/tree/master/zlt-demo/sso-demo
+https://projects.spring.io/spring-security-oauth/docs/oauth2.html
+https://echocow.cn/articles/2020/01/20/1579503807596.html
+
+https://github.com/gzmuSoft/authorization-server
+
+https://zhuanlan.zhihu.com/p/88421654
+
+https://www.jianshu.com/p/ad99d9486785

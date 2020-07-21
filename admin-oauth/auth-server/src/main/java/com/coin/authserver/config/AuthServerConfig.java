@@ -54,20 +54,23 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 //    @Autowired
 //    DataSource dataSource;
 
+//    @Autowired
+//    PasswordEncoder passwordEncoder;
+
     @Autowired
     ClientDetailsService clientDetailsService;
 
     @Autowired
     AuthenticationManager authenticationManager;
 
-
-    // 支持clientid、secret登录认证
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        super.configure(security);
+        // 限制客户端访问认证接口的权限
+        security.allowFormAuthenticationForClients();
+        security.checkTokenAccess("isAuthenticated()");
+        security.tokenKeyAccess("isAuthenticated()");
     }
 
-    // 配置授权模式
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
@@ -80,39 +83,41 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
             ;
     }
 
-    // 配置令牌存储
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
-            .tokenStore(tokenStore())
+            .tokenStore(jwtTokenStore())
             .userApprovalHandler(userApprovalHandler())
             .accessTokenConverter(accessTokenConverter());
     }
 
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
-        final RsaSigner signer = new RsaSigner(KeyConfig.getSignerKey());
-
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter() {
-            private JsonParser objectMapper = JsonParserFactory.create();
-
-            @Override
-            protected String encode(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-                String content;
-                try {
-                    content = this.objectMapper.formatMap(getAccessTokenConverter().convertAccessToken(accessToken, authentication));
-                } catch (Exception ex) {
-                    throw new IllegalStateException("Cannot convert access token to JSON", ex);
-                }
-                Map<String, String> headers = new HashMap<>();
-                headers.put("kid", KeyConfig.VERIFIER_KEY_ID);
-                String token = JwtHelper.encode(content, signer, headers).getEncoded();
-                return token;
-            }
-        };
-        converter.setSigner(signer);
-        converter.setVerifier(new RsaVerifier(KeyConfig.getVerifierKey()));
-        return converter;
+        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
+        jwtAccessTokenConverter.setSigningKey("cjs");   //  Sets the JWT signing key
+        return jwtAccessTokenConverter;
+//        final RsaSigner signer = new RsaSigner(KeyConfig.getSignerKey());
+//
+//        JwtAccessTokenConverter converter = new JwtAccessTokenConverter() {
+//            private JsonParser objectMapper = JsonParserFactory.create();
+//
+//            @Override
+//            protected String encode(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+//                String content;
+//                try {
+//                    content = this.objectMapper.formatMap(getAccessTokenConverter().convertAccessToken(accessToken, authentication));
+//                } catch (Exception ex) {
+//                    throw new IllegalStateException("Cannot convert access token to JSON", ex);
+//                }
+//                Map<String, String> headers = new HashMap<>();
+//                headers.put("kid", KeyConfig.VERIFIER_KEY_ID);
+//                String token = JwtHelper.encode(content, signer, headers).getEncoded();
+//                return token;
+//            }
+//        };
+//        converter.setSigner(signer);
+//        converter.setVerifier(new RsaVerifier(KeyConfig.getVerifierKey()));
+//        return converter;
     }
 
     @Bean
@@ -130,7 +135,8 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     }
 
     @Bean
-    public TokenStore tokenStore() {
+    public TokenStore jwtTokenStore() {
+        // 可以修改为redis
         JwtTokenStore tokenStore = new JwtTokenStore(accessTokenConverter());
         tokenStore.setApprovalStore(approvalStore());
         return tokenStore;

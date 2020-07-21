@@ -42,7 +42,7 @@
         <io.jsonwebtoken>0.9.1</io.jsonwebtoken>
         <mysql.version>8.0.19</mysql.version>
         <dozer.version>6.2.0</dozer.version>
-        <spring-security-oauth2.version>2.4.0.RELEASE</spring-security-oauth2.version>
+        <spring-security-oauth2.version>2.3.0.RELEASE</spring-security-oauth2.version>
         <spring-security-oauth2-autoconfigure.version>2.3.0.RELEASE</spring-security-oauth2-autoconfigure.version>
     </properties>
 
@@ -76,6 +76,10 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+            </dependency>
 <!--            <dependency>-->
 <!--                <groupId>com.alibaba.cloud</groupId>-->
 <!--                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>-->

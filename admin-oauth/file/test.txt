@@ -1,3 +1,7 @@
-http://localhost:8090/oauth/authorize?grant_type=authorization_code&response_type=code&client_id=ms-client&state=1234
+http://localhost:8090/oauth/authorize?grant_type=authorization_code&response_type=qH3UJR&client_id=ms-client&state=1234
+
+http://localhost:8090/oauth/authorize?response_type=code&client_id=ms-client&state=1234&scope=read
+
+http://localhost:8090/oauth/token?grant_type=authorization_code&code=GyQOL3&client_id=ms-client&scope=read
 
 curl ms-client:aa@localhost:8090/oauth/token -dgrant_type=client_credentials -dscope=any
