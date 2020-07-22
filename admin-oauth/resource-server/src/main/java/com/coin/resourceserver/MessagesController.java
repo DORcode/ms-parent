@@ -24,6 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MessagesController {
 
+	@GetMapping("/hello")
+	public String hello() {
+		return "hello";
+	}
+	@GetMapping("/admin/hello")
+	public String admin() {
+		return "admin";
+	}
+
 	@GetMapping("/messages")
 	public String[] getMessages() {
 		String[] messages = new String[] {"Message 1", "Message 2", "Message 3"};

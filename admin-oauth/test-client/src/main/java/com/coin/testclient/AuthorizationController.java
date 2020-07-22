@@ -18,72 +18,96 @@ package com.coin.testclient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 /**
  * @author Joe Grandja
  */
 @Controller
+@RequestMapping("/")
 public class AuthorizationController {
+    @Value("${security.oauth2.client.access-token-uri}")
+    private String accessTokenUri;
 
-	@Value("${messages.base-uri}")
-	private String messagesBaseUri;
+    @Autowired
+    @Qualifier("messagingClientAuthCodeRestTemplate")
+    private OAuth2RestTemplate messagingClientAuthCodeRestTemplate;
 
-	@Autowired
-	@Qualifier("messagingClientAuthCodeRestTemplate")
-	private OAuth2RestTemplate messagingClientAuthCodeRestTemplate;
+    @Autowired
+    @Qualifier("messagingClientClientCredsRestTemplate")
+    private OAuth2RestTemplate messagingClientClientCredsRestTemplate;
 
-	@Autowired
-	@Qualifier("messagingClientClientCredsRestTemplate")
-	private OAuth2RestTemplate messagingClientClientCredsRestTemplate;
+    @RequestMapping("login")
+    public String login() {
+        return "login";
+    }
 
-	@Autowired
-	@Qualifier("messagingClientPasswordRestTemplate")
-	private OAuth2RestTemplate messagingClientPasswordRestTemplate;
+    @RequestMapping("index")
+    public String index() {
+        return "index";
+    }
 
+    @RequestMapping("test")
+    @ResponseBody
+    public String text() {
+        return "test";
+    }
 
-	@GetMapping(value = "/authorize", params = "grant_type=authorization_code")
-	public String authorization_code_grant(Model model) {
-		String[] messages = this.messagingClientAuthCodeRestTemplate.getForObject(this.messagesBaseUri, String[].class);
-		model.addAttribute("messages", messages);
-		return "index";
-	}
+    @RequestMapping(value = "authorized", params = {"grant_type=authorization_code"})
+    @ResponseBody
+    public String authorized(HttpServletRequest request) {
+        // messagingClientClientCredsRestTemplate.getForObject()
+        return "authorized";
+    }
 
-	@GetMapping("/authorized")		// registered redirect_uri for authorization_code
-	public String authorized(Model model) {
-		String[] messages = this.messagingClientAuthCodeRestTemplate.getForObject(this.messagesBaseUri, String[].class);
-		model.addAttribute("messages", messages);
-		return "index";
-	}
+    @RequestMapping(value = "authorized", params = {"grant_type=client_credentials"})
+    @ResponseBody
+    public String authorized2(HttpServletRequest request) {
+        // messagingClientClientCredsRestTemplate.postForObject(null, String[].class)
+        return "authorized";
+    }
 
-	@GetMapping(value = "/authorize", params = "grant_type=client_credentials")
-	public String client_credentials_grant(Model model) {
-		String[] messages = this.messagingClientClientCredsRestTemplate.getForObject(this.messagesBaseUri, String[].class);
-		model.addAttribute("messages", messages);
-		return "index";
-	}
+    @Qualifier("restTemplate")
+    @Autowired
+    RestTemplate restTemplate;
 
-	@PostMapping(value = "/authorize", params = "grant_type=password")
-	public String password_grant(Model model, HttpServletRequest request) {
-		ResourceOwnerPasswordResourceDetails passwordResourceDetails =
-				(ResourceOwnerPasswordResourceDetails) this.messagingClientPasswordRestTemplate.getResource();
-		passwordResourceDetails.setUsername(request.getParameter("username"));
-		passwordResourceDetails.setPassword(request.getParameter("password"));
+    @GetMapping("/test.html")
+    public String hello(String code, Model model, HttpSession session) {
+        if (code != null) {
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("code", code);
+            map.add("client_id", "ms-client");
+            map.add("client_secret", "aa");
+            map.add("redirect_uri", "http://localhost:8280/test.html");
+            map.add("grant_type", "authorization_code");
+            Map resp = restTemplate.postForObject("http://localhost:8090/oauth/token", map, Map.class);
+            System.out.println("resp = " + resp);
+            String access_token = (String) resp.get("access_token");
 
-		String[] messages = this.messagingClientPasswordRestTemplate.getForObject(this.messagesBaseUri, String[].class);
-		model.addAttribute("messages", messages);
-
-		// Never store the user's credentials
-		passwordResourceDetails.setUsername(null);
-		passwordResourceDetails.setPassword(null);
-
-		return "index";
-	}
+            System.out.println(access_token);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "Bearer " + access_token);
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+            ResponseEntity<String> entity = restTemplate.exchange("http://localhost:8091/admin/hello", HttpMethod.GET, httpEntity, String.class);
+            model.addAttribute("msg", entity.getBody());
+            // model.addAttribute("refresh_token", )
+        }
+        return "test";
+    }
 }

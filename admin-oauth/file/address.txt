@@ -17,3 +17,5 @@ https://zhuanlan.zhihu.com/p/88421654
 https://www.jianshu.com/p/ad99d9486785
 
 https://echocow.cn/articles/2019/07/30/1564498598952.html 手机 邮箱登录验证
+
+https://docs.spring.io/spring-security/site/docs/current/reference/html5/#features

@@ -11,6 +11,7 @@ import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.token.TokenService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.jwt.JwtHelper;
@@ -22,6 +23,7 @@ import org.springframework.security.oauth2.common.util.JsonParserFactory;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
@@ -32,6 +34,8 @@ import org.springframework.security.oauth2.provider.approval.InMemoryApprovalSto
 import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -49,7 +53,7 @@ import java.util.Map;
  **/
 @Configuration
 @EnableAuthorizationServer
-public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
+public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
 //    @Autowired
 //    DataSource dataSource;
@@ -79,17 +83,28 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
             .authorizedGrantTypes("authorization_code", "implicit", "refresh_token", "client_credentials", "password")
             .scopes("read", "write")
             .secret(passwordEncoder.encode("aa"))
-            .redirectUris("http://localhost:8280/authorized")
-            ;
+            .redirectUris("http://localhost:8280/test.html");
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
-            .tokenStore(jwtTokenStore())
+                .tokenServices(tokenService())
             .userApprovalHandler(userApprovalHandler())
             .accessTokenConverter(accessTokenConverter());
     }
+
+    @Bean
+    public AuthorizationServerTokenServices tokenService() {
+        DefaultTokenServices services = new DefaultTokenServices();
+        services.setTokenStore(jwtTokenStore());
+        services.setSupportRefreshToken(true);
+        services.setReuseRefreshToken(true);
+        services.setAccessTokenValiditySeconds(60 * 60 * 2);
+        services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
+        return services;
+    }
+
 
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {

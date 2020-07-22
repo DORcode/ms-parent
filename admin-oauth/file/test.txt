@@ -2,6 +2,10 @@ http://localhost:8090/oauth/authorize?grant_type=authorization_code&response_typ
 
 http://localhost:8090/oauth/authorize?response_type=code&client_id=ms-client&state=1234&scope=read
 
-http://localhost:8090/oauth/token?grant_type=authorization_code&code=GyQOL3&client_id=ms-client&scope=read
+http://localhost:8090/oauth/token?grant_type=authorization_code&code=wqMBMl&client_id=ms-client&scope=read write
 
 curl ms-client:aa@localhost:8090/oauth/token -dgrant_type=client_credentials -dscope=any
+
+http://localhost:8080/oauth2/oauth/authorize?response_type=code&client_id=easylocate&scope=read&redirect_uri=http://localhost:8080/web
+
+http://localhost:8080/oauth2/oauth/token?grant_type=authorization_code&code=t7ol7D&redirect_uri=http://localhost:8080/web&client_id=easylocate&client_secret=secret

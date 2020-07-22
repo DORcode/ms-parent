@@ -1,6 +1,12 @@
 server:
   port: 8090
 
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
 #redis:
 #  database: 2
 #  host: localhost

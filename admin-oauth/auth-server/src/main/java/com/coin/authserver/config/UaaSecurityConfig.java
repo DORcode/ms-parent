@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,29 +28,29 @@ import java.util.Map;
  * @Version V1.0
  **/
 @Configuration
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.formLogin()
-//                .loginPage("/login")
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/login").permitAll()
-//                .anyRequest()
-//                .authenticated()
-//                .and().csrf().disable().cors();
-//    }
+// @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class UaaSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//            .authorizeRequests()
+//            .antMatchers("/login", "/oauth/**").permitAll()
+//            .anyRequest()
+//            .authenticated()
+//            .and().csrf().disable().cors();
+        super.configure(http);
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/assets/**", "/css/**", "/images/**");
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
-//    }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+    }
 
     @Bean
     @Override
@@ -61,14 +62,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected UserDetailsService userDetailsService() {
         // return new JdbcUserDetailsManager(this.dataSource);
-
-        return new InMemoryUserDetailsManager(
-            User.builder()
-                .username("user")
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+        manager.createUser(
+            User
+                .withUsername("user")
                 .password(passwordEncoder().encode("pwd"))
                 .roles("USER")
-                .build()
-        );
+                .authorities("delete")
+                .build());
+        return manager;
     }
 
     @Bean
