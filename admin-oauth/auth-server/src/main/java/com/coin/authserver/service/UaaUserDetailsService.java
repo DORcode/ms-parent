@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * @Version V1.0
  **/
 // @Service
-public class AuthUserDetailsService implements UserDetailsService {
+public class UaaUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {

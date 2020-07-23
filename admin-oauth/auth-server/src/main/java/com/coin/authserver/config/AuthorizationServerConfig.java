@@ -71,7 +71,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         // 限制客户端访问认证接口的权限
         security.allowFormAuthenticationForClients();
-        security.checkTokenAccess("isAuthenticated()");
+        // security.checkTokenAccess("isAuthenticated()");
         security.tokenKeyAccess("isAuthenticated()");
     }
 
@@ -80,18 +80,22 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         clients
             .inMemory()
             .withClient("ms-client")
-            .authorizedGrantTypes("authorization_code", "implicit", "refresh_token", "client_credentials", "password")
-            .scopes("read", "write")
+            .authorizedGrantTypes("authorization_code", "refresh_token")
+            .scopes("all")
             .secret(passwordEncoder.encode("aa"))
-            .redirectUris("http://localhost:8280/test.html");
+            .accessTokenValiditySeconds(7000)
+                // .refreshTokenValiditySeconds(7000)
+            .redirectUris("http://localhost:8280/login").autoApprove(true);
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.authenticationManager(authenticationManager)
-                .tokenServices(tokenService())
-            .userApprovalHandler(userApprovalHandler())
-            .accessTokenConverter(accessTokenConverter());
+//        endpoints.authenticationManager(authenticationManager)
+//                .tokenServices(tokenService())
+//            .userApprovalHandler(userApprovalHandler())
+//            .accessTokenConverter(accessTokenConverter());
+        endpoints.tokenStore(jwtTokenStore());
+        endpoints.accessTokenConverter(accessTokenConverter());
     }
 
     @Bean
@@ -101,7 +105,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         services.setSupportRefreshToken(true);
         services.setReuseRefreshToken(true);
         services.setAccessTokenValiditySeconds(60 * 60 * 2);
-        services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
+        // services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
         return services;
     }
 
@@ -111,56 +115,29 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
         jwtAccessTokenConverter.setSigningKey("cjs");   //  Sets the JWT signing key
         return jwtAccessTokenConverter;
-//        final RsaSigner signer = new RsaSigner(KeyConfig.getSignerKey());
-//
-//        JwtAccessTokenConverter converter = new JwtAccessTokenConverter() {
-//            private JsonParser objectMapper = JsonParserFactory.create();
-//
-//            @Override
-//            protected String encode(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-//                String content;
-//                try {
-//                    content = this.objectMapper.formatMap(getAccessTokenConverter().convertAccessToken(accessToken, authentication));
-//                } catch (Exception ex) {
-//                    throw new IllegalStateException("Cannot convert access token to JSON", ex);
-//                }
-//                Map<String, String> headers = new HashMap<>();
-//                headers.put("kid", KeyConfig.VERIFIER_KEY_ID);
-//                String token = JwtHelper.encode(content, signer, headers).getEncoded();
-//                return token;
-//            }
-//        };
-//        converter.setSigner(signer);
-//        converter.setVerifier(new RsaVerifier(KeyConfig.getVerifierKey()));
-//        return converter;
     }
 
-    @Bean
-    public UserApprovalHandler userApprovalHandler() {
-        ApprovalStoreUserApprovalHandler userApprovalHandler = new ApprovalStoreUserApprovalHandler();
-        userApprovalHandler.setApprovalStore(approvalStore());
-        userApprovalHandler.setClientDetailsService(this.clientDetailsService);
-        userApprovalHandler.setRequestFactory(new DefaultOAuth2RequestFactory(this.clientDetailsService));
-        return userApprovalHandler;
-    }
+//    @Bean
+//    public UserApprovalHandler userApprovalHandler() {
+//        ApprovalStoreUserApprovalHandler userApprovalHandler = new ApprovalStoreUserApprovalHandler();
+//        userApprovalHandler.setApprovalStore(approvalStore());
+//        userApprovalHandler.setClientDetailsService(this.clientDetailsService);
+//        userApprovalHandler.setRequestFactory(new DefaultOAuth2RequestFactory(this.clientDetailsService));
+//        return userApprovalHandler;
+//    }
 
-    @Bean
-    public ApprovalStore approvalStore() {
-        return new InMemoryApprovalStore();
-    }
+//    @Bean
+//    public ApprovalStore approvalStore() {
+//        return new InMemoryApprovalStore();
+//    }
 
     @Bean
     public TokenStore jwtTokenStore() {
         // 可以修改为redis
         JwtTokenStore tokenStore = new JwtTokenStore(accessTokenConverter());
-        tokenStore.setApprovalStore(approvalStore());
+        // tokenStore.setApprovalStore(approvalStore());
         return tokenStore;
     }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    }
 
     @Bean
     public JWKSet jwkSet() {

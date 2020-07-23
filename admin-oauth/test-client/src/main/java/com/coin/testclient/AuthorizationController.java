@@ -53,11 +53,6 @@ public class AuthorizationController {
     @Qualifier("messagingClientClientCredsRestTemplate")
     private OAuth2RestTemplate messagingClientClientCredsRestTemplate;
 
-    @RequestMapping("login")
-    public String login() {
-        return "login";
-    }
-
     @RequestMapping("index")
     public String index() {
         return "index";
@@ -96,18 +91,52 @@ public class AuthorizationController {
             map.add("client_secret", "aa");
             map.add("redirect_uri", "http://localhost:8280/test.html");
             map.add("grant_type", "authorization_code");
-            Map resp = restTemplate.postForObject("http://localhost:8090/oauth/token", map, Map.class);
-            System.out.println("resp = " + resp);
-            String access_token = (String) resp.get("access_token");
-
-            System.out.println(access_token);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", "Bearer " + access_token);
-            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
-            ResponseEntity<String> entity = restTemplate.exchange("http://localhost:8091/admin/hello", HttpMethod.GET, httpEntity, String.class);
-            model.addAttribute("msg", entity.getBody());
-            // model.addAttribute("refresh_token", )
+//            Map resp = restTemplate.postForObject("http://localhost:8090/oauth/token", map, Map.class);
+//            System.out.println("resp = " + resp);
+//            String access_token = (String) resp.get("access_token");
+//            String refresh_token = (String) resp.get("refresh_token");
+//            System.out.println(access_token);
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.add("Authorization", "Bearer " + access_token);
+//            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+//            ResponseEntity<String> entity = restTemplate.exchange("http://localhost:8091/admin/hello", HttpMethod.GET, httpEntity, String.class);
+//            model.addAttribute("msg", entity.getBody());
+//            model.addAttribute("refresh_token", refresh_token);
+//            model.addAttribute("access_token", access_token);
         }
         return "test";
+    }
+
+    @GetMapping("credentials")
+    @ResponseBody
+    public String credentials() {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("client_id", "ms-client");
+        map.add("client_secret", "aa");
+        map.add("redirect_uri", "http://localhost:8280/test.html");
+        map.add("grant_type", "client_credentials");
+        Map resp = restTemplate.postForObject("http://localhost:8090/oauth/token", map, Map.class);
+        System.out.println("resp = " + resp);
+        String access_token = (String) resp.get("access_token");
+        String refresh_token = (String) resp.get("refresh_token");
+        System.out.println(access_token);
+        // 更新 token
+//        map.set("grant_type", "refresh_token");
+//        map.set("refresh_token", refresh_token);
+//        map.remove("redirect_uri");
+//        Map resp2 = restTemplate.postForObject("http://localhost:8090/oauth/token", map, Map.class);
+//        System.out.println("resp2 = " + resp2);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + access_token);
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> entity = restTemplate.exchange("http://localhost:8091/admin/hello", HttpMethod.GET, httpEntity, String.class);
+        System.out.println("entity = " + entity.getBody());
+        return entity.getBody();
+    }
+
+    @GetMapping("refreshToken")
+    public String refreshToken() {
+        return "";
     }
 }

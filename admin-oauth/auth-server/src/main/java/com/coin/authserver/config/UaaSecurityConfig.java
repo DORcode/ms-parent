@@ -1,7 +1,9 @@
 package com.coin.authserver.config;
 
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -28,18 +30,17 @@ import java.util.Map;
  * @Version V1.0
  **/
 @Configuration
-// @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
 public class UaaSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http
-//            .authorizeRequests()
-//            .antMatchers("/login", "/oauth/**").permitAll()
-//            .anyRequest()
-//            .authenticated()
-//            .and().csrf().disable().cors();
-        super.configure(http);
+        http.formLogin()
+                .and()
+                .authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .anyRequest().authenticated()
+                .and().csrf().disable().cors();
+//        http.authorizeRequests().antMatchers("/login").permitAll().anyRequest().authenticated().and().formLogin();
     }
 
     @Override
@@ -67,9 +68,16 @@ public class UaaSecurityConfig extends WebSecurityConfigurerAdapter {
             User
                 .withUsername("user")
                 .password(passwordEncoder().encode("pwd"))
-                .roles("USER")
+                .roles("USER", "admin")
                 .authorities("delete")
                 .build());
+        manager.createUser(
+                User
+                    .withUsername("user2")
+                    .password(passwordEncoder().encode("pwd"))
+                    .roles("user")
+                    .authorities("query")
+                    .build());
         return manager;
     }
 

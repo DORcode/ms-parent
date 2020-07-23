@@ -19,3 +19,13 @@ https://www.jianshu.com/p/ad99d9486785
 https://echocow.cn/articles/2019/07/30/1564498598952.html 手机 邮箱登录验证
 
 https://docs.spring.io/spring-security/site/docs/current/reference/html5/#features
+
+https://zhuanlan.zhihu.com/p/130215689
+
+https://www.jianshu.com/p/fe1194ca8ecd  WebSecurityConfigurerAdapter与ResourceServerConfigurerAdapter
+
+https://mp.weixin.qq.com/s/33Oxu6YMjwco3WRE07_IiQ oauth 四种方式讲解
+
+https://mp.weixin.qq.com/s/Fuu9rKoOvSyuvCKSyh6dUQ  防火墙
+
+https://echocow.cn/articles/2019/07/14/1563096109753.html 包含令牌转换

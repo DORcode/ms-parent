@@ -26,25 +26,21 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  */
 @Configuration
 @EnableOAuth2Sso
-// @EnableGlobalMethodSecurity(prePostEnabled =true)
 public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) {
 		web
 			.ignoring()
-			.antMatchers("/webjars/**");
+			.antMatchers("/webjars/**", "/test2.html");
 
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.logout()
-				.and()
-				.antMatcher("/login").antMatcher("/index")
-				.authorizeRequests()
-				.antMatchers("/login", "/index").permitAll()
-				.anyRequest().authenticated();
+		http.logout();
+			http.authorizeRequests()
+			.anyRequest().authenticated();
 		http.csrf().disable();
 	}
 }
