@@ -31,3 +31,5 @@ https://mp.weixin.qq.com/s/Fuu9rKoOvSyuvCKSyh6dUQ  防火墙
 https://echocow.cn/articles/2019/07/14/1563096109753.html 包含令牌转换
 
 https://github.com/hansonwang99/Spring-Boot-In-Action/tree/master/springbt_security_jwt
+
+https://spring.io/guides/tutorials/spring-boot-oauth2/#_social_login_simple

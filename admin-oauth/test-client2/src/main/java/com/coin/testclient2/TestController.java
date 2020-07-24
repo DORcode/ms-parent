@@ -1,5 +1,6 @@
 package com.coin.testclient2;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,5 +21,11 @@ public class TestController {
     @ResponseBody
     public String test(HttpServletRequest request) {
         return request.getUserPrincipal().getName();
+    }
+
+    @GetMapping("user")
+    @ResponseBody
+    public Authentication user(Authentication user) {
+        return user;
     }
 }
