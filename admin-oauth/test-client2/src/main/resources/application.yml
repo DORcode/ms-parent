@@ -1,5 +1,7 @@
 server:
   port: 8281
+  servlet:
+    context-path: /client
 
 auth-server: http://localhost:8090
 
@@ -8,16 +10,18 @@ security:
     client:
       client-id: ms-client
       client-secret: aa
-      grant-type: authorization_code
       user-authorization-uri: ${auth-server}/oauth/authorize
       access-token-uri: ${auth-server}/oauth/token
-      scope: read, write
-      pre-established-redirect-uri: http://localhost:8280/authorized
-      use-current-uri: false
     resource:
       jwt:
         key-uri: ${auth-server}/oauth/token_key
 
 messages:
   base-uri: http://localhost:8091/messages
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
 

@@ -1,5 +1,10 @@
 server:
   port: 8280
+  servlet:
+    context-path: /client
+#    session:
+#      cookie:
+#        name: s1
 
 auth-server: http://localhost:8090
 
@@ -25,3 +30,4 @@ logging:
     org:
       springframework:
         security: DEBUG
+
