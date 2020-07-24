@@ -8,8 +8,8 @@ security:
     client:
       client-id: ms-client
       client-secret: aa
-      user-authorization-uri: ${auth-server}/oauth/authorize
-      access-token-uri: ${auth-server}/oauth/token
+      access-token-uri: http://localhost:8090/oauth/token
+      user-authorization-uri: http://localhost:8090/oauth/authorize
 
     resource:
       jwt:
@@ -17,3 +17,11 @@ security:
 
 messages:
   base-uri: http://localhost:8091/messages
+
+
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

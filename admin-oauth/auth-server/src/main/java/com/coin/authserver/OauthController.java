@@ -1,6 +1,7 @@
 package com.coin.authserver;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -11,11 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @Version V1.0
  **/
 @Controller
-@RequestMapping
 public class OauthController {
-
-    @RequestMapping("/oauth/error")
-    public void oauthError() {
-
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
+
 }

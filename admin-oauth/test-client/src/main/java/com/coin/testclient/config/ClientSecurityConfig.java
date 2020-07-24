@@ -17,30 +17,34 @@ package com.coin.testclient.config;
 
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 /**
  * @author Joe Grandja
  */
 @Configuration
 @EnableOAuth2Sso
+// @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) {
-		web
-			.ignoring()
-			.antMatchers("/webjars/**", "/test2.html");
+		web.ignoring().antMatchers("/bootstrap/**");
 
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.logout();
-			http.authorizeRequests()
-			.anyRequest().authenticated();
-		http.csrf().disable();
+		http.logout().logoutSuccessUrl("http://localhost:8080/logout")
+				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.authorizeRequests()
+				.anyRequest().authenticated()
+				.and()
+				.csrf().disable();
 	}
 }
