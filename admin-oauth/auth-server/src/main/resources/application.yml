@@ -19,6 +19,9 @@ spring:
       connection-timeout: 30000
       connection-test-query: select 1 from dual
 
+  main:
+    allow-bean-definition-overriding: true
+
 logging:
   level:
     org:

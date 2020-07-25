@@ -27,8 +27,8 @@ import java.util.Map;
  * @Date 2020-07-20 16:54
  * @Version V1.0
  **/
-// @Configuration
-// @EnableWebSecurity
+@Configuration
+@EnableWebSecurity
 public class UaaSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -45,7 +45,9 @@ public class UaaSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable().cors();
-        // http.authorizeRequests().antMatchers("/login").permitAll().anyRequest().authenticated().and().formLogin();
+
+        // http.headers().frameOptions().sameOrigin().httpStrictTransportSecurity().disable();
+        // .antMatchers(HttpMethod.OPTIONS, "**").permitAll()
     }
 
     @Override
@@ -56,5 +58,11 @@ public class UaaSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(uaaUserDetailsService).passwordEncoder(passwordEncoder);
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }
