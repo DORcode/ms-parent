@@ -56,6 +56,22 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints.allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST,HttpMethod.PUT,HttpMethod.DELETE,HttpMethod.OPTIONS);
     }
 
+
+
+    @Bean
+    public ClientDetailsService clientDetailsService() {
+        return new JdbcClientDetailsService(dataSource);
+    }
+
+    /**
+     * @MethodName tokenStoreUserApprovalHandler
+     * @Description 同意不同意
+     * @param
+     * @return org.springframework.security.oauth2.provider.approval.TokenStoreUserApprovalHandler
+     * @throws
+     * @author kh
+     * @date 2020-07-25 12:09
+     */
     @Bean
     public TokenStoreUserApprovalHandler tokenStoreUserApprovalHandler() {
         TokenStoreUserApprovalHandler handler = new TokenStoreUserApprovalHandler();
@@ -65,12 +81,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         return handler;
     }
 
+    /**
+     * @MethodName approvalStoreUserApprovalHandler
+     * @Description 选择Scope明细，同意不同意
+     * @param
+     * @return org.springframework.security.oauth2.provider.approval.ApprovalStoreUserApprovalHandler
+     * @throws
+     * @author kh
+     * @date 2020-07-25 12:08
+     */
     @Bean
-    public ClientDetailsService clientDetailsService() {
-        return new JdbcClientDetailsService(dataSource);
-    }
-
-    // @Bean
     public ApprovalStoreUserApprovalHandler approvalStoreUserApprovalHandler() {
         ApprovalStoreUserApprovalHandler handler = new ApprovalStoreUserApprovalHandler();
         handler.setApprovalStore(approvalStore());
