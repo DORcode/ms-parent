@@ -33,3 +33,6 @@ https://echocow.cn/articles/2019/07/14/1563096109753.html 包含令牌转换
 https://github.com/hansonwang99/Spring-Boot-In-Action/tree/master/springbt_security_jwt
 
 https://spring.io/guides/tutorials/spring-boot-oauth2/#_social_login_simple
+
+
+http://www.manongjc.com/article/56880.html cas 前后端分离跨域
