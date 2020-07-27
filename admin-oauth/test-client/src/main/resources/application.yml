@@ -11,7 +11,7 @@ auth-server: http://localhost:8090
 security:
   oauth2:
     client:
-      client-id: ms-client
+      client-id: ms-client2
       client-secret: aa
       access-token-uri: http://localhost:8090/oauth/token
       user-authorization-uri: http://localhost:8090/oauth/authorize

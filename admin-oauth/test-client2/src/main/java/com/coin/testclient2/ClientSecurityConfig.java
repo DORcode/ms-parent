@@ -41,6 +41,7 @@ public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
 				// .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 				.authorizeRequests()
+				.antMatchers("/accessToken").permitAll()
 				.anyRequest().authenticated()
 				.and()
 				.csrf().disable().cors();

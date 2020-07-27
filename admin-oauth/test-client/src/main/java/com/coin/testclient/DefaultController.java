@@ -15,9 +15,11 @@
  */
 package com.coin.testclient;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author Joe Grandja
@@ -44,5 +46,11 @@ public class DefaultController {
 	public String loginError(Model model) {
 		model.addAttribute("loginError", true);
 		return login();
+	}
+
+	@GetMapping("user")
+	@ResponseBody
+	public Authentication user(Authentication user) {
+		return user;
 	}
 }
