@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -40,6 +42,12 @@ public class TestController {
     @ResponseBody
     public Authentication user(Authentication user) {
         return user;
+    }
+
+    @GetMapping("front")
+    public void front(HttpServletResponse response) throws IOException {
+        // return "redirect:http://localhost:3001/test";
+        response.sendRedirect("http://localhost:3001/test");
     }
 
 

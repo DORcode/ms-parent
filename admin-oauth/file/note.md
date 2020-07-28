@@ -10,3 +10,6 @@ and /oauth/token_key (exposes public key for token verification if using JWT tok
 .and().logout()// 用户退出操作
 .logoutRequestMatcher(new AntPathRequestMatcher("/logout","POST"))// 用户退出所访问的路径，需要使用Post方式
 .permitAll().logoutSuccessUrl("/login?logout=true")
+
+
+AuthenticationFilter -> AuthenticationManager -> ProviderManager -> AuthenticationProvider(自定义来进行验证)

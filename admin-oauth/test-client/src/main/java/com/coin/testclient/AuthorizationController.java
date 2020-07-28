@@ -22,6 +22,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -126,6 +128,9 @@ public class AuthorizationController {
 //        map.remove("redirect_uri");
 //        Map resp2 = restTemplate.postForObject("http://localhost:8090/oauth/token", map, Map.class);
 //        System.out.println("resp2 = " + resp2);
+
+
+
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + access_token);

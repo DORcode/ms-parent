@@ -41,37 +41,8 @@ export default {
     // Authorization Bearer
     // this.test_seperate_sso();
 
-    let code = this.urlSearch('code')
-    let state = this.urlSearch('state')
-    // 如果存在 token，并且没有过期，
-    if (code && !localStorage.getItem('access_token')) {
-      console.log(code);
-      this.accessToken(code, state);
-    } else if(!code && !localStorage.getItem('access_token')) {
-      const a = 'http://localhost:8090/oauth/authorize?client_id=ms-client&redirect_uri=http://localhost:3001/hw&response_type=code&state=YHjEMR';
-
-      window.location.href = a
-      // window.open(a, '_blank');
-    } else if(!code) {
-      let token = localStorage.getItem('access_token')
-      let type = localStorage.getItem('token_type')
-
-      this.$axios.get(`http://localhost:8281/client/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
-        function (response) {
-          console.log(response);
-          if(response.data) {
-            let token = response.data.access_token
-            let expires_in = response.data.expires_in
-            let token_type = response.data.token_type
-            localStorage.setItem('access_token', token);
-            localStorage.setItem('expires_in', expires_in);
-            localStorage.setItem('token_type', token_type);
-          }
-        }
-        ).catch(function (error) {
-          console.log(error);
-        })
-    }
+    const a = 'http://localhost:8090/oauth/authorize?client_id=ms-client&redirect_uri=http://localhost:8281/client/login&response_type=code';
+    window.location.href = a
     
   },
 
@@ -87,7 +58,39 @@ export default {
         })
     },
 
-    accessToken: function (code, state) {
+    accessToken: function () {
+
+      let code = this.urlSearch('code')
+      let state = this.urlSearch('state')
+      // 如果存在 token，并且没有过期，
+      if (code && !localStorage.getItem('access_token')) {
+        console.log(code);
+        this.accessToken(code, state);
+      } else if(!code && !localStorage.getItem('access_token')) {
+        const a = 'http://localhost:8090/oauth/authorize?client_id=ms-client&redirect_uri=http://localhost:8281/client/login&response_type=code';
+
+        window.location.href = a
+        // window.open(a, '_blank');
+      } else if(!code) {
+        let token = localStorage.getItem('access_token')
+        let type = localStorage.getItem('token_type')
+
+        this.$axios.get(`http://localhost:8281/client/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
+          function (response) {
+            console.log(response);
+            if(response.data) {
+              let token = response.data.access_token
+              let expires_in = response.data.expires_in
+              let token_type = response.data.token_type
+              localStorage.setItem('access_token', token);
+              localStorage.setItem('expires_in', expires_in);
+              localStorage.setItem('token_type', token_type);
+            }
+          }
+          ).catch(function (error) {
+            console.log(error);
+          })
+      }
       
       this.$axios.get(`http://localhost:8281/client/accessToken?code=${code}&state=${state}`).then(
         function (response) {
