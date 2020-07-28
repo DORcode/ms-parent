@@ -7,11 +7,13 @@ import org.springframework.security.oauth2.client.OAuth2RestOperations;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +69,11 @@ public class TestController {
      * 在session中记录已经提醒，提醒的具体时间，并判断当前时间，如果相差很大，就再次拦截，对于过期，刷新access_token后，拦截回前端，特殊识别码
      *
      * 不需要 使用接口，在过滤器中定义即可。
+     *
+     * 简单的办法，是用户侧自己去获取code，
+     *
+     *
+     * 另一种方式，在后端，加一个页面，前端如果发现未登录，或者fresh_token过期，访问这个页面，并带参数，当前访问地址，后端登录验证后，重定向到该页面。
      * @param code
      * @param state
      * @param request
@@ -102,5 +109,19 @@ public class TestController {
         }
 
         return null;
+    }
+
+    @GetMapping("skip")
+    public void skip(Model mv, Authentication user, HttpServletResponse response) throws IOException {
+        if(user.isAuthenticated()) {
+            response.sendRedirect("http://localhost:3001/test");
+        } else {
+
+        }
+//            mv.addAttribute("isLogin", true);
+//        } else {
+//            mv.addAttribute("isLogin", false);
+//        }
+//        return "/skip";
     }
 }

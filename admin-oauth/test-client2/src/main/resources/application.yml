@@ -5,6 +5,7 @@ server:
 
 auth-server: http://localhost:8090
 
+
 security:
   oauth2:
     client:
@@ -24,4 +25,8 @@ logging:
     org:
       springframework:
         security: DEBUG
-
+spring:
+  freemarker:
+    suffix: .ftl
+    enabled: true
+    template-loader-path: classpath:/templates/
