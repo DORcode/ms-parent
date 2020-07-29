@@ -4,8 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2RestOperations;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -56,24 +62,28 @@ public class TestController {
     /**
      * @MethodName accessToken
      * @Description
-     * 认证服务器的界面不分离，不分离比较简单，开发时，麻烦，体验差，分离，登录需要由form改造成ajax,改造username...即可？还有一些处理
-     *
-     * 或者权限做成一个单独的应用，前后端分离，
      *
      * 由前端自己判断是否登录，根据access_token和过期时间判断， 如果未登录，则登录
      *
-     * 对于已经登录，过段时间再次使用，怎么判断是登录过的用户？把 refresh_token过期时间发给关段，
+     * 对于已经登录，过段时间再次使用，怎么判断是登录过的用户？把 refresh_token过期时间发给前端，
      * 再次登录时，判断如果fresh_token未过期，直接刷新，如果过期，直接登录，如果刷新时，返回的状态为fresh_token异常则重新重定向登录。
      *
      * 过滤，如果未登录，直接返回，状态，提醒前端发起登录，如果token快过期，比如剩下2分钟，
      * 在session中记录已经提醒，提醒的具体时间，并判断当前时间，如果相差很大，就再次拦截，对于过期，刷新access_token后，拦截回前端，特殊识别码
      *
-     * 不需要 使用接口，在过滤器中定义即可。
-     *
-     * 简单的办法，是用户侧自己去获取code，
-     *
      *
      * 另一种方式，在后端，加一个页面，前端如果发现未登录，或者fresh_token过期，访问这个页面，并带参数，当前访问地址，后端登录验证后，重定向到该页面。
+     *
+     * client是过滤方式，，对其进行改写
+     * refresh_token，
+     * 服务端，加入ajax登录验证方式，过滤是根据什么判断是本系统登录，还是其它系统登录。
+     *
+     * 前端，未登录，调用后端专门用于重定向的接口，登录后，重写向到后端login接口，
+     * client后端自动去获取token,对于token获取成功，将重定向修改为重写向到前端的专门地址
+     * （是否携带access_token，client后端是否会判断header或parameter中有token，或者在跨域下，后端保存，如果行不通，则改造为通过token来判断）
+     *
+     * 关键是要验证，access_token、或者后端保存多终端正常
+     *
      * @param code
      * @param state
      * @param request
@@ -111,10 +121,13 @@ public class TestController {
         return null;
     }
 
-    @GetMapping("skip")
-    public void skip(Model mv, Authentication user, HttpServletResponse response) throws IOException {
+    @GetMapping("callback")
+    public void callback(Model mv, Authentication user, HttpServletResponse response) throws IOException {
+        OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) user.getDetails();
         if(user.isAuthenticated()) {
-            response.sendRedirect("http://localhost:3001/test");
+            String address = String.format("http://localhost:3001/test?access_token=%s&token_type=%s&sessionId=%s",
+                    details.getTokenValue(), details.getTokenType(), details.getSessionId());
+            response.sendRedirect(address);
         } else {
 
         }

@@ -39,3 +39,9 @@ https://spring.io/guides/tutorials/spring-boot-oauth2/#_social_login_simple
 
 
 http://www.manongjc.com/article/56880.html cas 前后端分离跨域
+
+https://github.com/love-fay/fay-sso
+
+https://blog.csdn.net/weixin_40773253/article/details/84589785 前后端分离，csrf配置
+
+https://www.kancloud.cn/zhangdaiscott/jeecg-boot/1273852 cas

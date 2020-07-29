@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="test">
         <p>test</p>
     </div>
 </template>
@@ -14,43 +14,22 @@ export default {
   data: function () {
     // Authorization Bearer
 
-    this.user();
+    let access_token = this.urlSearch('access_token')
+    let token_type = this.urlSearch('token_type')
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('token_type', token_type);
+    if(localStorage.getItem('access_token')) {
+      access_token = localStorage.getItem('access_token')
+    }
+    console.log(access_token)
+    if(access_token) {
+      this.user();
+    }
+    
     
   },
 
   methods: {
-    test_seperate_sso: function () {
-      console.log('开始');
-      this.$axios.get('http://localhost:8281/client').then(
-        function (response) {
-          console.log(response);
-        }
-        ).catch(function (error) {
-          console.log(error);
-        })
-    },
-
-    user: function () {
-      
-      let token = localStorage.getItem('access_token')
-      let type = localStorage.getItem('token_type')
-
-      this.$axios.get(`http://localhost:8281/client/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
-        function (response) {
-          console.log(response);
-          if(response.data) {
-            let token = response.data.access_token
-            let expires_in = response.data.expires_in
-            let token_type = response.data.token_type
-            localStorage.setItem('access_token', token);
-            localStorage.setItem('expires_in', expires_in);
-            localStorage.setItem('token_type', token_type);
-          }
-        }
-        ).catch(function (error) {
-          console.log(error);
-        })
-    },
 
     urlSearch: function (key){
       let name,value,str=location.href,num=str.indexOf("?"); //取得整个地址栏
@@ -68,6 +47,39 @@ export default {
           }
         }
       }
+    },
+
+    test_seperate_sso: function () {
+      console.log('开始');
+      this.$axios.get('http://localhost:8281/client').then(
+        function (response) {
+          console.log(response);
+        }
+        ).catch(function (error) {
+          console.log(error);
+        })
+    },
+
+    user: function () {
+      
+      let token = localStorage.getItem('access_token')
+      let type = localStorage.getItem('token_type')
+      this.$axios.defaults.withCredentials = false
+      this.$axios.get(`http://localhost:8281/client/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
+        function (response) {
+          console.log(response);
+          if(response.data) {
+            let token = response.data.access_token
+            let expires_in = response.data.expires_in
+            let token_type = response.data.token_type
+            localStorage.setItem('access_token', token);
+            localStorage.setItem('expires_in', expires_in);
+            localStorage.setItem('token_type', token_type);
+          }
+        }
+        ).catch(function (error) {
+          console.log(error);
+        })
     }
 
   }

@@ -1,15 +1,12 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h3>Installed CLI Plugins</h3>
-    <h3>Essential Links</h3>
-    <h3>Ecosystem</h3>
+  <div id="ago">
+    <h1>ago</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'Ago',
   props: {
     msg: String
   },
@@ -22,7 +19,9 @@ export default {
     // window.location.href = a
 
     // this.accessToken();
-    this.getCode();
+    // this.getCode();
+    const a = 'http://localhost:8281/client/callback'
+    window.location.href = a
   },
 
   methods: {
@@ -42,10 +41,10 @@ export default {
       // let state = this.urlSearch('state')
 
       // 如果不存在 token，
-      if(!code && !localStorage.getItem('access_token')) {
+      if(!localStorage.getItem('access_token')) {
         console.log('获取code')
-        const a = 'http://localhost:8090/oauth/authorize?client_id=ms-client&redirect_uri=http://localhost:8281/client/skip&response_type=code';
-
+        // const a = 'http://localhost:8090/oauth/authorize?client_id=ms-client&redirect_uri=http://localhost:8281/client/skip&response_type=code';
+        const a = 'http://localhost:8281/client/skip'
         window.location.href = a
         // window.open(a, '_blank');
       } else if(!code && localStorage.getItem('access_token')) {
