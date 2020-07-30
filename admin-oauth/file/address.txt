@@ -45,3 +45,12 @@ https://github.com/love-fay/fay-sso
 https://blog.csdn.net/weixin_40773253/article/details/84589785 前后端分离，csrf配置
 
 https://www.kancloud.cn/zhangdaiscott/jeecg-boot/1273852 cas
+
+https://segmentfault.com/a/1190000015235402?utm_source=sf-related cas 跨域
+
+https://blog.csdn.net/u010588262/article/details/80014083 cas 加入controller的配置
+
+
+https://github.com/mer97/spring-security-oauth2-sso 前后端完全分离
+
+https://github.com/mer97/vue-element-demo/tree/dev-login 前后端完全分离

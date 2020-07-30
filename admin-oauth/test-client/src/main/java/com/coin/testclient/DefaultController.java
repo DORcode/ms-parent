@@ -16,10 +16,14 @@
 package com.coin.testclient;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author Joe Grandja
@@ -53,4 +57,24 @@ public class DefaultController {
 	public Authentication user(Authentication user) {
 		return user;
 	}
+
+	@GetMapping("callback")
+	public void callback(Model mv, Authentication user, HttpServletResponse response) throws IOException {
+		OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) user.getDetails();
+		if(user.isAuthenticated()) {
+			String address = String.format("http://localhost:3001/test?access_token=%s&token_type=%s&sessionId=%s",
+					details.getTokenValue(), details.getTokenType(), details.getSessionId());
+			response.sendRedirect(address);
+		} else {
+			// TokenEndpointAuthenticationFilter
+			// AuthorizationServerTokenServices
+			// SavedRequestAwareAuthenticationSuccessHandler
+		}
+//            mv.addAttribute("isLogin", true);
+//        } else {
+//            mv.addAttribute("isLogin", false);
+//        }
+//        return "/skip";
+	}
+
 }

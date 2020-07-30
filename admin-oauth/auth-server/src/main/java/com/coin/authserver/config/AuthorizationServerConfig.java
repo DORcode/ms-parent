@@ -3,6 +3,7 @@ package com.coin.authserver.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.*;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
@@ -52,6 +54,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints.authenticationManager(authenticationManager);
         endpoints.accessTokenConverter(jwtAccessTokenConverter());
         endpoints.tokenStore(jwtTokenStore());
+        endpoints.tokenServices(defaultTokenServices());
         endpoints.userApprovalHandler(tokenStoreUserApprovalHandler());
         endpoints.allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST,HttpMethod.PUT,HttpMethod.DELETE,HttpMethod.OPTIONS);
     }
@@ -107,14 +110,18 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         return store;
     }
 
-    /*@Primary
+    @Primary
     @Bean
     public DefaultTokenServices defaultTokenServices() {
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+        defaultTokenServices.setAuthenticationManager(authenticationManager);
+        defaultTokenServices.setReuseRefreshToken(false);
+        defaultTokenServices.setClientDetailsService(clientDetailsService());
+        defaultTokenServices.setTokenEnhancer(jwtAccessTokenConverter());
         defaultTokenServices.setTokenStore(jwtTokenStore());
         defaultTokenServices.setSupportRefreshToken(true);
         return defaultTokenServices;
-    }*/
+    }
 
     @Bean
     public JwtTokenStore jwtTokenStore() {

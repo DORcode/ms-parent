@@ -10,6 +10,9 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.security.oauth2.provider.endpoint.TokenEndpointAuthenticationFilter;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Controller;
@@ -125,11 +128,13 @@ public class TestController {
     public void callback(Model mv, Authentication user, HttpServletResponse response) throws IOException {
         OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) user.getDetails();
         if(user.isAuthenticated()) {
-            String address = String.format("http://localhost:3001/test?access_token=%s&token_type=%s&sessionId=%s",
+            String address = String.format("http://localhost:3002/test?access_token=%s&token_type=%s&sessionId=%s",
                     details.getTokenValue(), details.getTokenType(), details.getSessionId());
             response.sendRedirect(address);
         } else {
-
+            // TokenEndpointAuthenticationFilter
+            // AuthorizationServerTokenServices
+            // SavedRequestAwareAuthenticationSuccessHandler
         }
 //            mv.addAttribute("isLogin", true);
 //        } else {
