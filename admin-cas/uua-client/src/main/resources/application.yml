@@ -1,0 +1,12 @@
+server:
+  port: 8380
+
+cas:
+  server:
+    url:
+      prefix: https://mmoayyed.unicon.net:8443/cas
+      login: ${cas.server.url.prefix}/login
+
+  client:
+    server:
+      name: http://mmoayyed.unicof.net:8380
