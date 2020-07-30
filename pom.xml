@@ -44,6 +44,9 @@
         <dozer.version>6.2.0</dozer.version>
         <spring-security-oauth2.version>2.2.6.RELEASE</spring-security-oauth2.version>
         <spring-security-oauth2-autoconfigure.version>2.2.6.RELEASE</spring-security-oauth2-autoconfigure.version>
+
+        <app.server>-tomcat</app.server>
+        <cas.version>5.3.14</cas.version>
     </properties>
 
     <dependencies>
@@ -348,6 +351,51 @@
                 <groupId>com.nimbusds</groupId>
                 <artifactId>nimbus-jose-jwt</artifactId>
                 <version>8.2.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apereo.cas</groupId>
+                <artifactId>cas-server-webapp${app.server}</artifactId>
+                <version>${cas.version}</version>
+                <type>war</type>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apereo.cas</groupId>
+                <artifactId>cas-server-support-jdbc-drivers</artifactId>
+                <version>${cas.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apereo.cas</groupId>
+                <artifactId>cas-server-core-authentication-api</artifactId>
+                <version>${cas.version}</version>
+            </dependency>
+
+            <!-- Custom Configuration -->
+            <dependency>
+                <groupId>org.apereo.cas</groupId>
+                <artifactId>cas-server-core-configuration-api</artifactId>
+                <version>${cas.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apereo.cas</groupId>
+                <artifactId>cas-server-support-rest</artifactId>
+                <version>${cas.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jasig.cas.client</groupId>
+                <artifactId>cas-client-core</artifactId>
+                <version>3.4.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
