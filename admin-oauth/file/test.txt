@@ -14,3 +14,9 @@ http://localhost:8080/oauth2/oauth/token?grant_type=authorization_code&code=t7ol
 http://localhost:1112/login?code=jYVQzl&state=HZcXc5
 
 http://localhost:1111/oauth2/oauth/token?grant_type=authorization_code&code=UwKqOa&redirect_uri=http://localhost:1112/hello&client_id=javaboy&client_secret=123&scope=user
+
+
+存在的问题，需要考虑过期、刷新token问题
+异常需要返回json给前端，处理好异常，或者写一个exception界面。
+
+页面登录后，刷新，token丢掉了

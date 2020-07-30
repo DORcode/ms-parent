@@ -50,6 +50,10 @@ public class UaaSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
+                .and().logout()
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .and().csrf().disable();
 
         // http.headers().frameOptions().sameOrigin().httpStrictTransportSecurity().disable();

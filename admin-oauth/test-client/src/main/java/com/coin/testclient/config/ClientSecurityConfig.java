@@ -44,7 +44,11 @@ public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.logout().logoutSuccessUrl("http://localhost:8090/logout")
+		http.logout()
+				.logoutSuccessUrl("http://localhost:8090/logout")
+				.clearAuthentication(true)
+				.invalidateHttpSession(true)
+				.deleteCookies("JSESSIONID")
 				// .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 				.authorizeRequests()
