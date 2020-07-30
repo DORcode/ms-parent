@@ -20,8 +20,15 @@ export default {
 
     // this.accessToken();
     // this.getCode();
-    const a = 'http://localhost:8280/client/callback'
-    window.location.href = a
+    console.log('开始')
+    console.log(localStorage.getItem('access_token'))
+    if(!localStorage.getItem('access_token')) {
+      const a = 'http://localhost:8280/client/callback'
+      window.location.href = a
+    } else {
+      this.getCode()
+    }
+    
   },
 
   methods: {
@@ -44,14 +51,14 @@ export default {
       if(!localStorage.getItem('access_token')) {
         console.log('获取code')
         // const a = 'http://localhost:8090/oauth/authorize?client_id=ms-client&redirect_uri=http://localhost:8281/client/skip&response_type=code';
-        const a = 'http://localhost:8281/client/callback'
+        const a = 'http://localhost:8280/client/callback'
         window.location.href = a
         // window.open(a, '_blank');
-      } else if(!code && localStorage.getItem('access_token')) {
+      } else if(localStorage.getItem('access_token')) {
         let type = localStorage.getItem('token_type')
         let token = localStorage.getItem('access_token')
         // 没有code参数，并且存在access_token时，
-        this.$axios.get(`http://localhost:8281/client/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
+        this.$axios.get(`http://localhost:8280/client/api/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
           function (response) {
             console.log(response);
             if(response.data) {
@@ -69,7 +76,7 @@ export default {
       } else if(code && !localStorage.getItem('access_token')) {
         console.log('获取access_token')
         // 当
-        this.$axios.get(`http://localhost:8281/client/login?code=${code}&redirect_uri=http://localhost:3001`).then(
+        this.$axios.get(`http://localhost:8280/client/login?code=${code}&redirect_uri=http://localhost:3001`).then(
         function (response) {
           console.log(response);
           if(response.data) {
@@ -91,7 +98,7 @@ export default {
       let code = this.urlSearch('code')
       let state = this.urlSearch('state')
       
-      this.$axios.get(`http://localhost:8281/client/accessToken?code=${code}&state=${state}`).then(
+      this.$axios.get(`http://localhost:8280/client/accessToken?code=${code}&state=${state}`).then(
         function (response) {
           console.log(response);
           if(response.data) {

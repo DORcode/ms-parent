@@ -68,8 +68,8 @@ export default {
       
       let token = localStorage.getItem('access_token')
       let type = localStorage.getItem('token_type')
-      this.$axios.defaults.withCredentials = false
-      this.$axios.get(`http://localhost:8281/client/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
+      this.$axios.defaults.withCredentials = true
+      this.$axios.get(`http://localhost:8281/client/api/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
         function (response) {
           console.log(response);
           if(response.data) {

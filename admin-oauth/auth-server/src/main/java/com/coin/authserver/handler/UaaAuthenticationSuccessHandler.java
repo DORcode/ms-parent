@@ -61,7 +61,7 @@ public class UaaAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
             throw new UnapprovedClientAuthenticationException("clientSecret 不匹配"+clientId);
         }
         //密码授权 模式, 组建 authentication
-        TokenRequest tokenRequest = new TokenRequest(new HashMap<>(),clientId,clientDetails.getScope(),"password");
+        TokenRequest tokenRequest = new TokenRequest(new HashMap<>(),clientId,clientDetails.getScope(),"code");
 
         OAuth2Request oAuth2Request = tokenRequest.createOAuth2Request(clientDetails);
         OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(oAuth2Request,authentication);

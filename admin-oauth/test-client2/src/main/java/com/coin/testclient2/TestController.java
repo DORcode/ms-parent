@@ -49,7 +49,7 @@ public class TestController {
         return request.getUserPrincipal().getName();
     }
 
-    @GetMapping("user")
+    @GetMapping("/api/user")
     @ResponseBody
     public Authentication user(Authentication user) {
         return user;
@@ -65,27 +65,6 @@ public class TestController {
     /**
      * @MethodName accessToken
      * @Description
-     *
-     * 由前端自己判断是否登录，根据access_token和过期时间判断， 如果未登录，则登录
-     *
-     * 对于已经登录，过段时间再次使用，怎么判断是登录过的用户？把 refresh_token过期时间发给前端，
-     * 再次登录时，判断如果fresh_token未过期，直接刷新，如果过期，直接登录，如果刷新时，返回的状态为fresh_token异常则重新重定向登录。
-     *
-     * 过滤，如果未登录，直接返回，状态，提醒前端发起登录，如果token快过期，比如剩下2分钟，
-     * 在session中记录已经提醒，提醒的具体时间，并判断当前时间，如果相差很大，就再次拦截，对于过期，刷新access_token后，拦截回前端，特殊识别码
-     *
-     *
-     * 另一种方式，在后端，加一个页面，前端如果发现未登录，或者fresh_token过期，访问这个页面，并带参数，当前访问地址，后端登录验证后，重定向到该页面。
-     *
-     * client是过滤方式，，对其进行改写
-     * refresh_token，
-     * 服务端，加入ajax登录验证方式，过滤是根据什么判断是本系统登录，还是其它系统登录。
-     *
-     * 前端，未登录，调用后端专门用于重定向的接口，登录后，重写向到后端login接口，
-     * client后端自动去获取token,对于token获取成功，将重定向修改为重写向到前端的专门地址
-     * （是否携带access_token，client后端是否会判断header或parameter中有token，或者在跨域下，后端保存，如果行不通，则改造为通过token来判断）
-     *
-     * 关键是要验证，access_token、或者后端保存多终端正常
      *
      * @param code
      * @param state
@@ -126,9 +105,10 @@ public class TestController {
 
     @GetMapping("callback")
     public void callback(Model mv, Authentication user, HttpServletResponse response) throws IOException {
-        OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) user.getDetails();
-        if(user.isAuthenticated()) {
-            String address = String.format("http://localhost:3002/test?access_token=%s&token_type=%s&sessionId=%s",
+
+        if(user != null && user.isAuthenticated()) {
+            OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) user.getDetails();
+            String address = String.format("http://localhost:3001/test?access_token=%s&token_type=%s&sessionId=%s",
                     details.getTokenValue(), details.getTokenType(), details.getSessionId());
             response.sendRedirect(address);
         } else {

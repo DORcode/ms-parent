@@ -16,8 +16,8 @@ import java.io.IOException;
  * @Date 2020/3/24 18:23
  * @Version V1.0
  **/
-@Order(Ordered.HIGHEST_PRECEDENCE)
-@Configuration
+//@Order(Ordered.HIGHEST_PRECEDENCE)
+//@Configuration
 public class CorFilter implements Filter {
 
     @Override

@@ -52,7 +52,7 @@ public class DefaultController {
 		return login();
 	}
 
-	@GetMapping("user")
+	@GetMapping("/api/user")
 	@ResponseBody
 	public Authentication user(Authentication user) {
 		return user;
@@ -62,7 +62,7 @@ public class DefaultController {
 	public void callback(Model mv, Authentication user, HttpServletResponse response) throws IOException {
 		OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) user.getDetails();
 		if(user.isAuthenticated()) {
-			String address = String.format("http://localhost:3001/test?access_token=%s&token_type=%s&sessionId=%s",
+			String address = String.format("http://localhost:3002/test?access_token=%s&token_type=%s&sessionId=%s",
 					details.getTokenValue(), details.getTokenType(), details.getSessionId());
 			response.sendRedirect(address);
 		} else {

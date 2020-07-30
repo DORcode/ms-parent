@@ -1,4 +1,4 @@
-package com.coin.testclient2;
+package com.coin.testclient.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -29,6 +29,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.requestMatchers().antMatchers(HttpMethod.OPTIONS, "/oauth/**","/login/**","/logout/**", "/callback").and().authorizeRequests().antMatchers("/callback").permitAll().anyRequest().authenticated();
-        // http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+
     }
 }

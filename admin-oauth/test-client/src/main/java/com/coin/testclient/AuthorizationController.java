@@ -44,41 +44,41 @@ import java.util.Map;
 @Controller
 @RequestMapping("/")
 public class AuthorizationController {
-    @Value("${security.oauth2.client.access-token-uri}")
-    private String accessTokenUri;
-
-    @Autowired
-    @Qualifier("messagingClientAuthCodeRestTemplate")
-    private OAuth2RestTemplate messagingClientAuthCodeRestTemplate;
-
-    @Autowired
-    @Qualifier("messagingClientClientCredsRestTemplate")
-    private OAuth2RestTemplate messagingClientClientCredsRestTemplate;
-
-    @RequestMapping("index")
-    public String index() {
-        return "index";
-    }
-
-    @RequestMapping("test")
-    @ResponseBody
-    public String text() {
-        return "test";
-    }
-
-    @RequestMapping(value = "authorized", params = {"grant_type=authorization_code"})
-    @ResponseBody
-    public String authorized(HttpServletRequest request) {
-        // messagingClientClientCredsRestTemplate.getForObject()
-        return "authorized";
-    }
-
-    @RequestMapping(value = "authorized", params = {"grant_type=client_credentials"})
-    @ResponseBody
-    public String authorized2(HttpServletRequest request) {
-        // messagingClientClientCredsRestTemplate.postForObject(null, String[].class)
-        return "authorized";
-    }
+//    @Value("${security.oauth2.client.access-token-uri}")
+//    private String accessTokenUri;
+//
+//    @Autowired
+//    @Qualifier("messagingClientAuthCodeRestTemplate")
+//    private OAuth2RestTemplate messagingClientAuthCodeRestTemplate;
+//
+//    @Autowired
+//    @Qualifier("messagingClientClientCredsRestTemplate")
+//    private OAuth2RestTemplate messagingClientClientCredsRestTemplate;
+//
+//    @RequestMapping("index")
+//    public String index() {
+//        return "index";
+//    }
+//
+//    @RequestMapping("test")
+//    @ResponseBody
+//    public String text() {
+//        return "test";
+//    }
+//
+//    @RequestMapping(value = "authorized", params = {"grant_type=authorization_code"})
+//    @ResponseBody
+//    public String authorized(HttpServletRequest request) {
+//        // messagingClientClientCredsRestTemplate.getForObject()
+//        return "authorized";
+//    }
+//
+//    @RequestMapping(value = "authorized", params = {"grant_type=client_credentials"})
+//    @ResponseBody
+//    public String authorized2(HttpServletRequest request) {
+//        // messagingClientClientCredsRestTemplate.postForObject(null, String[].class)
+//        return "authorized";
+//    }
 
     @Qualifier("restTemplate")
     @Autowired

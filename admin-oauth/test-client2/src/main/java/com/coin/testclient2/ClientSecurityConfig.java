@@ -17,11 +17,15 @@ package com.coin.testclient2;
 
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * @author Joe Grandja
@@ -39,14 +43,25 @@ public class ClientSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.logout().logoutSuccessUrl("http://localhost:8090/logout")
-				// .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				//.and().sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true)
-				.and()
-				.authorizeRequests()
-				.antMatchers("/accessToken").permitAll()
-				.anyRequest().authenticated()
-				.and()
-				.csrf().disable().cors();
+		http
+			.logout().logoutSuccessUrl("http://localhost:8090/logout")
+			// .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			//.and().sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true)
+			.and()
+			.authorizeRequests()
+			.anyRequest().authenticated()
+			.and()
+			.csrf().disable().cors().configurationSource(corsConfigurationSource());
+	}
+
+	private CorsConfigurationSource corsConfigurationSource() {
+		CorsConfigurationSource source =   new UrlBasedCorsConfigurationSource();
+		CorsConfiguration corsConfiguration = new CorsConfiguration();
+		corsConfiguration.addAllowedOrigin("*");
+		corsConfiguration.addAllowedHeader("*");
+		corsConfiguration.addAllowedMethod("*");
+		corsConfiguration.setAllowCredentials(true);
+		((UrlBasedCorsConfigurationSource) source).registerCorsConfiguration("/**",corsConfiguration); //配置允许跨域访问的url
+		return source;
 	}
 }

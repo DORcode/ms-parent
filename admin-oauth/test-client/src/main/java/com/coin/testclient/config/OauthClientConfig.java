@@ -19,8 +19,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
  * @Date 2020-07-22 12:27
  * @Version V1.0
  **/
-@Configuration
-@EnableOAuth2Client
+//@Configuration
+//@EnableOAuth2Client
 public class OauthClientConfig {
     @ConfigurationProperties(prefix = "security.oauth2.client.messaging-client-auth-code")
     @Bean

@@ -54,3 +54,5 @@ https://blog.csdn.net/u010588262/article/details/80014083 cas 加入controller�
 https://github.com/mer97/spring-security-oauth2-sso 前后端完全分离
 
 https://github.com/mer97/vue-element-demo/tree/dev-login 前后端完全分离
+
+https://blog.csdn.net/fly_leopard/article/details/88740233 oauth2问题
