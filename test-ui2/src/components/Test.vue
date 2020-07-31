@@ -55,7 +55,7 @@ export default {
 
     test_seperate_sso: function () {
       console.log('开始');
-      this.$axios.get('http://localhost:8280/client').then(
+      this.$axios.get('http://client1.com:8280/client').then(
         function (response) {
           console.log(response);
         }
@@ -69,7 +69,7 @@ export default {
       let token = localStorage.getItem('access_token')
       let type = localStorage.getItem('token_type')
       this.$axios.defaults.withCredentials = true
-      this.$axios.get(`http://localhost:8280/client/api/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
+      this.$axios.get(`http://client1.com:8280/client/api/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
         function (response) {
           console.log(response);
           if(response.data) {

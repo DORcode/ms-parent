@@ -20,7 +20,7 @@ export default {
 
     // this.accessToken();
     // this.getCode();
-    const a = 'http://localhost:8281/client/callback'
+    const a = 'http://client2.com:8281/client/callback'
     window.location.href = a
   },
 

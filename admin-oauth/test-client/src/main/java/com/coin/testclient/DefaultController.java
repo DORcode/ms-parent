@@ -17,6 +17,7 @@ package com.coin.testclient;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,6 +70,7 @@ public class DefaultController {
 			// TokenEndpointAuthenticationFilter
 			// AuthorizationServerTokenServices
 			// SavedRequestAwareAuthenticationSuccessHandler
+			// SecurityContextPersistenceFilter
 		}
 //            mv.addAttribute("isLogin", true);
 //        } else {

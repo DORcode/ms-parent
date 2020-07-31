@@ -16,7 +16,9 @@ export default {
 
     let access_token = this.urlSearch('access_token')
     let token_type = this.urlSearch('token_type')
+    console.log(access_token)
     if(access_token) {
+      console.log(access_token)
       localStorage.setItem('access_token', access_token);
       localStorage.setItem('token_type', token_type);
     }
@@ -69,7 +71,7 @@ export default {
       let token = localStorage.getItem('access_token')
       let type = localStorage.getItem('token_type')
       this.$axios.defaults.withCredentials = true
-      this.$axios.get(`http://localhost:8281/client/api/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
+      this.$axios.get(`http://client2.com:8281/client/api/user`, {headers:{ Authorization: `${type} ${token}` }}).then(
         function (response) {
           console.log(response);
           if(response.data) {

@@ -19,6 +19,7 @@ security:
     resource:
       jwt:
         key-uri: ${auth-server}/oauth/token_key
+      filter-order: 3
 
 messages:
   base-uri: http://localhost:8091/messages
