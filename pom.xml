@@ -358,7 +358,7 @@
                 <artifactId>cas-server-webapp${app.server}</artifactId>
                 <version>${cas.version}</version>
                 <type>war</type>
-                <scope>runtime</scope>
+<!--                <scope>runtime</scope>-->
             </dependency>
 
             <dependency>

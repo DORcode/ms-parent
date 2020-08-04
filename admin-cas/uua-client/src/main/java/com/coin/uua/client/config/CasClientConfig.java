@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
+import javax.servlet.FilterConfig;
+
 /**
  * @ClassName CasClientConfig
  * @Description: Cas客户端配置类
@@ -39,6 +41,30 @@ public class CasClientConfig {
     }
 
     @Bean
+    public FilterRegistrationBean cas30ProxyReceivingTicketValidationFilterBean() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(cas30ProxyReceivingTicketValidationFilter());
+        registration.addUrlPatterns("/*");
+        return registration;
+    }
+
+    @Bean
+    public FilterRegistrationBean httpServletRequestWrapperFilterBean() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(httpServletRequestWrapperFilter());
+        registration.addUrlPatterns("/*");
+        return registration;
+    }
+
+    @Bean
+    public FilterRegistrationBean singleSignOutFilterBean() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(singleSignOutFilter());
+        registration.addUrlPatterns("/*");
+        return registration;
+    }
+
+    @Bean
     public AuthenticationFilter authenticationFilter() {
         AuthenticationFilter filter = new AuthenticationFilter();
         filter.setCasServerLoginUrl(casServerLoginUrl);
@@ -51,6 +77,7 @@ public class CasClientConfig {
         filter.setRedirectAfterValidation(true);
         filter.setUseSession(true);
         filter.setServerName(casClientServerName);
+        filter.setService("");
         return filter;
     }
 

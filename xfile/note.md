@@ -12,7 +12,7 @@ and /oauth/token_key (exposes public key for token verification if using JWT tok
 .permitAll().logoutSuccessUrl("/login?logout=true")
 
 
-AuthenticationFilter -> AuthenticationManager -> ProviderManager -> AuthenticationProvider(自定义来进行验证)
+AuthenticationFilter -> AuthenticationManager AuthenticationProvider-> ProviderManager -> AuthenticationProvider(自定义来进行验证)
 
 OAuth2Server Filter链
 
