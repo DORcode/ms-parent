@@ -5,6 +5,7 @@ import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.jasig.cas.client.util.HttpServletRequestWrapperFilter;
 import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -12,8 +13,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
+import org.springframework.util.CollectionUtils;
 
 import javax.servlet.FilterConfig;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +39,8 @@ public class CasClientConfig {
     @Value("${cas.client.server.name}")
     private String casClientServerName;
 
+    private CasClientConfigurer casClientConfigurer;
+
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
@@ -46,6 +51,9 @@ public class CasClientConfig {
         registration.setInitParameters(initParams);
         registration.setOrder(2);
         registration.addUrlPatterns("/*");
+        if(this.casClientConfigurer != null) {
+            casClientConfigurer.configureAuthenticationFilter(registration);
+        }
         return registration;
     }
 
@@ -59,6 +67,10 @@ public class CasClientConfig {
         initParams.put("serverName", casClientServerName);
         registration.setInitParameters(initParams);
         registration.setOrder(1);
+        if(this.casClientConfigurer != null) {
+            casClientConfigurer.configureValidationFilter(registration);
+        }
+
         return registration;
     }
 
@@ -68,6 +80,10 @@ public class CasClientConfig {
         registration.setFilter(httpServletRequestWrapperFilter());
         registration.addUrlPatterns("/*");
         registration.setOrder(3);
+        if(this.casClientConfigurer != null) {
+            casClientConfigurer.configureHttpServletRequestWrapperFilter(registration);
+        }
+
         return registration;
     }
 
