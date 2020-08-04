@@ -10,6 +10,7 @@
     <groupId>com.coin</groupId>
     <artifactId>admin-cas</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>admin-cas</name>
     <description>Demo project for Spring Boot</description>
 

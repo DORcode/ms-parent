@@ -7,11 +7,15 @@ import org.jasig.cas.client.util.HttpServletRequestWrapperFilter;
 import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.Ordered;
 
 import javax.servlet.FilterConfig;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @ClassName CasClientConfig
@@ -26,7 +30,7 @@ public class CasClientConfig {
     @Value("${cas.server.url.prefix}")
     private String casServerUrlPrefix;
 
-    @Value("{cas.server.url.login}")
+    @Value("${cas.server.url.login}")
     private String casServerLoginUrl;
 
     @Value("${cas.client.server.name}")
@@ -36,6 +40,11 @@ public class CasClientConfig {
     public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(authenticationFilter());
+        final Map<String, String> initParams = new HashMap<>(2);
+        initParams.put("casServerLoginUrl", casServerLoginUrl);
+        initParams.put("serverName", casClientServerName);
+        registration.setInitParameters(initParams);
+        registration.setOrder(2);
         registration.addUrlPatterns("/*");
         return registration;
     }
@@ -45,6 +54,11 @@ public class CasClientConfig {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(cas30ProxyReceivingTicketValidationFilter());
         registration.addUrlPatterns("/*");
+        final Map<String, String> initParams = new HashMap<>(2);
+        initParams.put("casServerUrlPrefix", casServerUrlPrefix);
+        initParams.put("serverName", casClientServerName);
+        registration.setInitParameters(initParams);
+        registration.setOrder(1);
         return registration;
     }
 
@@ -53,6 +67,7 @@ public class CasClientConfig {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(httpServletRequestWrapperFilter());
         registration.addUrlPatterns("/*");
+        registration.setOrder(3);
         return registration;
     }
 
@@ -61,13 +76,16 @@ public class CasClientConfig {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(singleSignOutFilter());
         registration.addUrlPatterns("/*");
+        Map<String,String> initParameters = new HashMap<>(1);
+        initParameters.put("casServerUrlPrefix", casServerUrlPrefix);
+        registration.setInitParameters(initParameters);
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registration;
     }
 
     @Bean
     public AuthenticationFilter authenticationFilter() {
         AuthenticationFilter filter = new AuthenticationFilter();
-        filter.setCasServerLoginUrl(casServerLoginUrl);
         return filter;
     }
 
@@ -77,7 +95,6 @@ public class CasClientConfig {
         filter.setRedirectAfterValidation(true);
         filter.setUseSession(true);
         filter.setServerName(casClientServerName);
-        filter.setService("");
         return filter;
     }
 
@@ -95,10 +112,12 @@ public class CasClientConfig {
         return filter;
     }
 
-    @EventListener
-    public SingleSignOutHttpSessionListener singleSignOutHttpSessionListener() {
+    @Bean
+    public ServletListenerRegistrationBean singleSignOutHttpSessionListener() {
+        ServletListenerRegistrationBean<java.util.EventListener> registration = new ServletListenerRegistrationBean<>();
         SingleSignOutHttpSessionListener listener = new SingleSignOutHttpSessionListener();
-        return listener;
+        registration.setListener(listener);
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return registration;
     }
-
 }
