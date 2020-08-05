@@ -65,6 +65,8 @@ public class CasClientConfig {
         final Map<String, String> initParams = new HashMap<>(2);
         initParams.put("casServerUrlPrefix", casServerUrlPrefix);
         initParams.put("serverName", casClientServerName);
+        // initParams.put("ignorePattern", "");
+        // initParams.put("ignoreUrlPatternType", "com.coin.uua.client.config.SimpleUrlPatternMatcherStrategy");
         registration.setInitParameters(initParams);
         registration.setOrder(1);
         if(this.casClientConfigurer != null) {

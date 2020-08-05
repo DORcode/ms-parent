@@ -8,6 +8,7 @@ cas:
       prefix: ${cas.server.name}/cas
       login: ${cas.server.url.prefix}/login
 
+
   client:
     server:
       name: http://mmoayyed.unicof.net:8381

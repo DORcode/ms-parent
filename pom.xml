@@ -386,11 +386,11 @@
                 <version>${cas.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.jasig.cas.client</groupId>
-                <artifactId>cas-client-support-springboot</artifactId>
-                <version>3.6.1</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.jasig.cas.client</groupId>-->
+<!--                <artifactId>cas-client-support-springboot</artifactId>-->
+<!--                <version>3.6.1</version>-->
+<!--            </dependency>-->
 
             <dependency>
                 <groupId>org.jasig.cas.client</groupId>
@@ -402,6 +402,12 @@
                         <artifactId>servlet-api</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.penggle</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>2.3.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
