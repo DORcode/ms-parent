@@ -1,0 +1,14 @@
+server:
+  port: 8384
+
+cas:
+  server:
+    name: http://mmoayyed.unicon.net:8443
+    url:
+      prefix: ${cas.server.name}/cas
+      login: ${cas.server.url.prefix}/login
+
+  client:
+    server:
+      name: http://mmoayyed.unicof.net:8384
+

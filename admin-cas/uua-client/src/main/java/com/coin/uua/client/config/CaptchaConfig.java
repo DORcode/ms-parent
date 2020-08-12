@@ -43,7 +43,7 @@ public class CaptchaConfig {
     public void test() {
         String text = defaultKaptcha().createText();
         BufferedImage image = defaultKaptcha().createImage(text);
-        
+
     }
 
 }

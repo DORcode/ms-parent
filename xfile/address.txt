@@ -64,3 +64,13 @@ https://blog.csdn.net/u010475041/article/details/78028658 cas 服务管理
 https://blog.csdn.net/qq_34021712/article/details/82313920 cas redis
 
 https://apereo.github.io/cas/5.1.x/installation/Configuration-Properties.html#management-webapp cas
+
+https://blog.csdn.net/qq_34021712/article/details/81638090 services management
+
+https://github.com/luotuo/cas4.0.x-server-wechat
+
+https://www.xncoding.com/2019/01/13/security/cas06.html
+
+https://blog.csdn.net/u010475041/article/details/78300586 cas 第三方登录
+
+https://blog.csdn.net/u010475041/article/details/78140643 移动端

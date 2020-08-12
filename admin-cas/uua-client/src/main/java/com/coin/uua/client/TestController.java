@@ -21,6 +21,7 @@ public class TestController {
     @GetMapping("currentUser")
     public Object currentUser(HttpServletRequest request) {
         AttributePrincipal principal = (AttributePrincipal) request.getUserPrincipal();
+
         return principal;
     }
 }
