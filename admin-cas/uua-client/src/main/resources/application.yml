@@ -1,5 +1,7 @@
 server:
   port: 8381
+  servlet:
+    context-path: /test
 
 cas:
   server:
@@ -7,8 +9,13 @@ cas:
     url:
       prefix: ${cas.server.name}/cas
       login: ${cas.server.url.prefix}/login
-
+      logout: ${cas.server.url.prefix}/logout?service=${cas.client.server.url.prefix}
 
   client:
     server:
-      name: http://mmoayyed.unicof.net:8381
+      name: http://mmoayyed.unicof.net:${server.port}
+      url:
+        prefix: ${cas.client.server.name}${server.servlet.context-path}
+      login: login
+      logout: logout
+

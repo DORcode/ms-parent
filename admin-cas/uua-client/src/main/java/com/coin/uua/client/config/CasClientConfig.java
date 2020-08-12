@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.util.CollectionUtils;
 
 import javax.servlet.FilterConfig;
@@ -27,7 +29,7 @@ import java.util.Map;
  * @Date 2020-07-30 19:25
  * @Version V1.0
  **/
-@Configuration
+// @Configuration
 public class CasClientConfig {
 
     @Value("${cas.server.url.prefix}")
@@ -36,8 +38,14 @@ public class CasClientConfig {
     @Value("${cas.server.url.login}")
     private String casServerLoginUrl;
 
+    @Value("${cas.server.url.logout}")
+    private String casServerLogoutUrl;
+
     @Value("${cas.client.server.name}")
     private String casClientServerName;
+
+    @Value("${cas.client.server.url.prefix}")
+    private String casClientServerPrefix;
 
     private CasClientConfigurer casClientConfigurer;
 
@@ -50,7 +58,7 @@ public class CasClientConfig {
         initParams.put("serverName", casClientServerName);
         registration.setInitParameters(initParams);
         registration.setOrder(2);
-        registration.addUrlPatterns("/*");
+        // registration.addUrlPatterns("/*");
         if(this.casClientConfigurer != null) {
             casClientConfigurer.configureAuthenticationFilter(registration);
         }
@@ -90,12 +98,26 @@ public class CasClientConfig {
     }
 
     @Bean
+    public FilterRegistrationBean logOutFilter() {
+        FilterRegistrationBean filterRegistration = new FilterRegistrationBean();//new SecurityContextLogoutHandler()
+        LogoutFilter logoutFilter = new LogoutFilter(casServerLoginUrl + "/logout?service=" + casClientServerName, new SecurityContextLogoutHandler());
+        filterRegistration.setFilter(logoutFilter);
+        filterRegistration.setEnabled(true);
+        filterRegistration.addUrlPatterns("/logout");
+        filterRegistration.addInitParameter("casServerUrlPrefix", casServerLoginUrl);
+        filterRegistration.addInitParameter("serverName", casClientServerName);
+        filterRegistration.setOrder(2);
+        return filterRegistration;
+    }
+
+    @Bean
     public FilterRegistrationBean singleSignOutFilterBean() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(singleSignOutFilter());
         registration.addUrlPatterns("/*");
         Map<String,String> initParameters = new HashMap<>(1);
         initParameters.put("casServerUrlPrefix", casServerUrlPrefix);
+        initParameters.put("serverName", casClientServerName);
         registration.setInitParameters(initParameters);
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registration;
