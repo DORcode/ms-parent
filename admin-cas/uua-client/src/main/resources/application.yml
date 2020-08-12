@@ -16,6 +16,7 @@ cas:
       name: http://mmoayyed.unicof.net:${server.port}
       url:
         prefix: ${cas.client.server.name}${server.servlet.context-path}
-      login: login
-      logout: logout
+      login: /login
+      logout: /logout
+      urlPattern: /*
 

@@ -3,6 +3,7 @@ package com.coin.uua.client.config;
 import org.jasig.cas.client.authentication.AuthenticationFilter;
 import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
+import org.jasig.cas.client.util.AssertionThreadLocalFilter;
 import org.jasig.cas.client.util.HttpServletRequestWrapperFilter;
 import org.jasig.cas.client.validation.Cas30ProxyReceivingTicketValidationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.util.CollectionUtils;
 
 import javax.servlet.FilterConfig;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName CasClientConfig
@@ -57,7 +56,7 @@ public class CasClientConfig {
         initParams.put("casServerLoginUrl", casServerLoginUrl);
         initParams.put("serverName", casClientServerName);
         registration.setInitParameters(initParams);
-        registration.setOrder(2);
+        registration.setOrder(4);
         // registration.addUrlPatterns("/*");
         if(this.casClientConfigurer != null) {
             casClientConfigurer.configureAuthenticationFilter(registration);
@@ -76,7 +75,7 @@ public class CasClientConfig {
         // initParams.put("ignorePattern", "");
         // initParams.put("ignoreUrlPatternType", "com.coin.uua.client.config.SimpleUrlPatternMatcherStrategy");
         registration.setInitParameters(initParams);
-        registration.setOrder(1);
+        registration.setOrder(5);
         if(this.casClientConfigurer != null) {
             casClientConfigurer.configureValidationFilter(registration);
         }
@@ -89,7 +88,7 @@ public class CasClientConfig {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(httpServletRequestWrapperFilter());
         registration.addUrlPatterns("/*");
-        registration.setOrder(3);
+        registration.setOrder(6);
         if(this.casClientConfigurer != null) {
             casClientConfigurer.configureHttpServletRequestWrapperFilter(registration);
         }
@@ -119,8 +118,19 @@ public class CasClientConfig {
         initParameters.put("casServerUrlPrefix", casServerUrlPrefix);
         initParameters.put("serverName", casClientServerName);
         registration.setInitParameters(initParameters);
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registration.setOrder(3);
         return registration;
+    }
+
+    @Bean
+    public FilterRegistrationBean casAssertionThreadLocalFilter(){
+        FilterRegistrationBean authenticationFilter = new FilterRegistrationBean();
+        authenticationFilter.setFilter(new AssertionThreadLocalFilter());
+        authenticationFilter.setOrder(7);
+        List<String> urlPatterns = new ArrayList<>();
+        urlPatterns.add("/*");
+        // authenticationFilter.setUrlPatterns(urlPatterns);
+        return authenticationFilter;
     }
 
     @Bean
@@ -150,6 +160,13 @@ public class CasClientConfig {
         filter.setCasServerUrlPrefix(casServerUrlPrefix);
         filter.setIgnoreInitConfiguration(true);
         return filter;
+    }
+
+    @Bean
+    public AssertionThreadLocalFilter assertionThreadLocalFilter() {
+        AssertionThreadLocalFilter threadLocalFilter = new AssertionThreadLocalFilter();
+
+        return threadLocalFilter;
     }
 
     @Bean

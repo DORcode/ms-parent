@@ -45,8 +45,11 @@ import org.springframework.security.core.userdetails.AuthenticationUserDetailsSe
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -137,7 +140,7 @@ public class UuaClientSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 设置回调的service路径，此为主页路径
 		//Cas Server认证成功后的跳转地址，这里要跳转到我们的Spring Security应用，
 		//之后会由CasAuthenticationFilter处理，默认处理地址为/j_spring_cas_security_check
-		serviceProperties.setService(casClientServerUrlPrefix + "/login");
+		serviceProperties.setService(casClientServerUrlPrefix + "/callback");
 		// 对所有的未拥有ticket的访问均需要验证
 		serviceProperties.setAuthenticateAllArtifacts(true);
 		return serviceProperties;
@@ -158,8 +161,12 @@ public class UuaClientSecurityConfig extends WebSecurityConfigurerAdapter {
 	public CasAuthenticationFilter casAuthenticationFilter() throws Exception {
 		CasAuthenticationFilter casAuthenticationFilter = new CasAuthenticationFilter();
 		casAuthenticationFilter.setAuthenticationManager(authenticationManager());
+		casAuthenticationFilter.setServiceProperties(serviceProperties());
 		//指定处理地址，不指定时默认将会是“/j_spring_cas_security_check”
-		casAuthenticationFilter.setFilterProcessesUrl(login);
+		casAuthenticationFilter.setFilterProcessesUrl(casServerLoginUrl);
+		casAuthenticationFilter.setContinueChainBeforeSuccessfulAuthentication(false);
+		casAuthenticationFilter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler("/callback"));
+		// casAuthenticationFilter.setAuthenticationFailureHandler();
 		return casAuthenticationFilter;
 	}
 
