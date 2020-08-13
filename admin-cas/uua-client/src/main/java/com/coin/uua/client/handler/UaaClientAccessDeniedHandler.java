@@ -10,6 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @ClassName UaaClientAccessDeniedHandler
@@ -30,9 +32,13 @@ public class UaaClientAccessDeniedHandler implements AccessDeniedHandler {
         if (request.getHeader("accept").indexOf("application/json") > -1
                 || (request.getHeader("X-Requested-With") != null && request.getHeader("X-Requested-With").equals(
                 "XMLHttpRequest")) || !path.contains("callback")) {
+            Map<Object, Object> map = new HashMap<>();
+            map.put("msg", "权限不足");
+            map.put("code", 403);
+            map.put("success", false);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
-            response.getOutputStream().write(objectMapper.writeValueAsBytes("权限不足"));
+            response.getOutputStream().write(objectMapper.writeValueAsBytes(map));
         } else {
             if(errorPage!=null){
                 request.setAttribute(WebAttributes.ACCESS_DENIED_403, accessDeniedException);
