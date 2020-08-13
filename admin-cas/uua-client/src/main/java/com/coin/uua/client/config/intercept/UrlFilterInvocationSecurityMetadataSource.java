@@ -25,13 +25,14 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
     AntPathMatcher requestMatcher = new AntPathMatcher();
 
     public UrlFilterInvocationSecurityMetadataSource() {
+        // 根据用户角色去查询资源和权限，和当前用户的对比
     }
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         FilterInvocation fi = (FilterInvocation) object;
         String requestUrl = fi.getRequestUrl();
-        // 根据地址查询
+        // 根据地址查询角色
         if(true) {
             SecurityConfig.createList("role_admin", "role_delete", "role_manage");
         }
