@@ -16,8 +16,12 @@
 package com.coin.uua.client.config;
 
 import com.coin.uua.client.UaaUserDetailsService;
+import com.coin.uua.client.config.access.UrlAccessDecisionManager;
+import com.coin.uua.client.config.intercept.UrlFilterInvocationSecurityMetadataSource;
 import com.coin.uua.client.handler.UaaClientAccessDeniedHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
+import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.util.AssertionThreadLocalFilter;
 import org.jasig.cas.client.util.HttpServletRequestWrapperFilter;
@@ -37,6 +41,7 @@ import org.springframework.security.cas.authentication.CasAssertionAuthenticatio
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,6 +50,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -119,6 +125,15 @@ public class UuaClientSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.authorizeRequests()
 				.anyRequest().authenticated()
+//				.withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+//
+//					@Override
+//					public <O extends FilterSecurityInterceptor> O postProcess(O fsi) {
+//						// fsi.setAccessDecisionManager(new UrlAccessDecisionManager());
+//						fsi.setSecurityMetadataSource(new UrlFilterInvocationSecurityMetadataSource());
+//						return fsi;
+//					}
+//				})
 				.and()
 				.csrf().disable().cors().configurationSource(corsConfigurationSource());
 
@@ -158,6 +173,12 @@ public class UuaClientSecurityConfig extends WebSecurityConfigurerAdapter {
 		return serviceProperties;
 	}
 
+	@Bean
+	public ProxyGrantingTicketStorage proxyGrantingTicketStorage() {
+		ProxyGrantingTicketStorageImpl ticketStorage = new ProxyGrantingTicketStorageImpl();
+		return ticketStorage;
+	}
+
 	private CorsConfigurationSource corsConfigurationSource() {
 		CorsConfigurationSource source =   new UrlBasedCorsConfigurationSource();
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
@@ -178,6 +199,8 @@ public class UuaClientSecurityConfig extends WebSecurityConfigurerAdapter {
 		casAuthenticationFilter.setFilterProcessesUrl(casServerLoginUrl);
 		casAuthenticationFilter.setContinueChainBeforeSuccessfulAuthentication(false);
 		casAuthenticationFilter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler("/callback"));
+		// casAuthenticationFilter.setProxyGrantingTicketStorage(proxyGrantingTicketStorage());
+		// casAuthenticationFilter.setProxyReceptorUrl("");
 		// casAuthenticationFilter.setAuthenticationFailureHandler();
 		return casAuthenticationFilter;
 	}
@@ -205,6 +228,8 @@ public class UuaClientSecurityConfig extends WebSecurityConfigurerAdapter {
 	public Cas30ProxyTicketValidator cas30ServiceTicketValidator() {
 		// 配置上服务端的校验ticket地址
 		Cas30ProxyTicketValidator ticketValidator = new Cas30ProxyTicketValidator(casServerUrlPrefix);
+		// ticketValidator.setProxyCallbackUrl("");
+		// ticketValidator.setProxyGrantingTicketStorage(proxyGrantingTicketStorage());
 		return ticketValidator;
 	}
 
