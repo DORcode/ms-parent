@@ -18,5 +18,6 @@ cas:
         prefix: ${cas.client.server.name}${server.servlet.context-path}
       login: /login
       logout: /logout
+      callback: /callback
       urlPattern: /*
 

@@ -1,8 +1,6 @@
-package com.coin.uua.client;
+package com.coin.uuacrm;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.jasig.cas.client.util.AssertionHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,10 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 public class TestController {
 
     @GetMapping("currentUser")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public Object currentUser(HttpServletRequest request, Authentication user) {
+    public Object currentUser(HttpServletRequest request) {
         // AttributePrincipal principal = (AttributePrincipal) request.getUserPrincipal();
 
-        return user;
+        return AssertionHolder.getAssertion();
     }
 }

@@ -16,6 +16,7 @@
 package com.coin.uua.client.config;
 
 import com.coin.uua.client.UaaUserDetailsService;
+import com.coin.uua.client.handler.UaaClientAccessDeniedHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.util.AssertionThreadLocalFilter;
@@ -50,6 +51,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -58,7 +60,9 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -90,6 +94,9 @@ public class UuaClientSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Value("${cas.client.server.logout}")
 	private String logout;
 
+	@Value("${cas.client.server.callback}")
+	private String callback;
+
 	private String errorPage;
 
 	@Autowired
@@ -108,16 +115,16 @@ public class UuaClientSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.exceptionHandling()
-				.accessDeniedHandler(accessDeniedHandler())
-				.and().logout()
+		http.logout()
 				.and()
 				.authorizeRequests()
 				.anyRequest().authenticated()
 				.and()
 				.csrf().disable().cors().configurationSource(corsConfigurationSource());
 
-		http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint())
+		http.exceptionHandling()
+				.authenticationEntryPoint(casAuthenticationEntryPoint())
+				.accessDeniedHandler(new UaaClientAccessDeniedHandler())
 				.and()
 				.addFilter(casAuthenticationFilter())
 				.addFilterBefore(casLogoutFilter(), LogoutFilter.class)
@@ -140,7 +147,12 @@ public class UuaClientSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 设置回调的service路径，此为主页路径
 		//Cas Server认证成功后的跳转地址，这里要跳转到我们的Spring Security应用，
 		//之后会由CasAuthenticationFilter处理，默认处理地址为/j_spring_cas_security_check
-		serviceProperties.setService(casClientServerUrlPrefix + "/callback");
+		if(StringUtils.isEmpty(callback)) {
+			serviceProperties.setService(casClientServerUrlPrefix + login);
+		} else {
+			serviceProperties.setService(casClientServerUrlPrefix + callback);
+		}
+
 		// 对所有的未拥有ticket的访问均需要验证
 		serviceProperties.setAuthenticateAllArtifacts(true);
 		return serviceProperties;
@@ -219,41 +231,6 @@ public class UuaClientSecurityConfig extends WebSecurityConfigurerAdapter {
 		LogoutFilter logoutFilter = new LogoutFilter(casServerLogoutUrl, new SecurityContextLogoutHandler());
 		logoutFilter.setFilterProcessesUrl(logout);
 		return logoutFilter;
-	}
-
-	@Bean
-	public AssertionThreadLocalFilter assertionThreadLocalFilter() {
-		AssertionThreadLocalFilter threadLocalFilter = new AssertionThreadLocalFilter();
-		return threadLocalFilter;
-	}
-
-	private AccessDeniedHandler accessDeniedHandler() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		return (HttpServletRequest request, HttpServletResponse response,
-				AccessDeniedException accessDeniedException) -> {
-			String path = request.getServletPath();
-			// 如果是api开始的，是ajax请求，返回消息，重新登录
-			if (request.getHeader("accept").indexOf("application/json") > -1
-					|| (request.getHeader("X-Requested-With") != null && request.getHeader("X-Requested-With").equals(
-					"XMLHttpRequest"))) {
-				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-				response.setContentType("application/json");
-				response.getOutputStream().write(objectMapper.writeValueAsBytes("权限不足"));
-			} else {
-				if(errorPage!=null){
-					request.setAttribute(WebAttributes.ACCESS_DENIED_403, accessDeniedException);
-
-					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-
-					RequestDispatcher dispatcher = request.getRequestDispatcher(errorPage);
-					dispatcher.forward(request, response);
-				}else{
-					response.sendError(HttpServletResponse.SC_FORBIDDEN, accessDeniedException.getMessage());
-				}
-
-			}
-
-		};
 	}
 
 	private AuthenticationFailureHandler failureHandler() {
