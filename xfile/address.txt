@@ -74,3 +74,5 @@ https://www.xncoding.com/2019/01/13/security/cas06.html
 https://blog.csdn.net/u010475041/article/details/78300586 cas 第三方登录
 
 https://blog.csdn.net/u010475041/article/details/78140643 移动端
+
+https://blog.csdn.net/MyHerux/article/details/89495180 cas 前后端分离配置

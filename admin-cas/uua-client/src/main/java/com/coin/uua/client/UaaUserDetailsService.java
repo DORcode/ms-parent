@@ -30,7 +30,8 @@ public class UaaUserDetailsService implements AuthenticationUserDetailsService<C
 //        List<SysPermission> permissionList = permissionService.findByUserId(sysUser.getId());
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
 
-        authorityList.add(new SimpleGrantedAuthority("role_user"));
+        // 需要大写
+        authorityList.add(new SimpleGrantedAuthority("role_admin".toUpperCase()));
 //        if (!CollectionUtils.isEmpty(permissionList)) {
 //            for (SysPermission sysPermission : permissionList) {
 //                authorityList.add(new SimpleGrantedAuthority(sysPermission.getCode()));
