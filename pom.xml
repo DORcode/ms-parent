@@ -24,6 +24,7 @@
         <module>ms-dict</module>
         <module>admin-client</module>
         <module>admin-oauth</module>
+        <module>admin-cas</module>
     </modules>
 
     <properties>

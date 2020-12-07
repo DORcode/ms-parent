@@ -3,7 +3,6 @@ package com.coin.msdict.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.coin.msdict.config.dict.DictDataSourceConfig;
 import com.coin.msdict.config.dict.DictLocalCache;
 import com.coin.msdict.web.entity.SysDict;
 import com.coin.msdict.web.mapper.SysDictMapper;
@@ -13,14 +12,11 @@ import com.coin.util.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.coin.util.ResultCodeEnum;
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.coin.util.Result;
 import com.coin.msdict.web.po.SysDictPo;
 import com.coin.msdict.web.vo.SysDictVo;
-import com.coin.msdict.web.dto.SysDictDto;
 
 import lombok.extern.slf4j.Slf4j;
 import java.io.Serializable;
