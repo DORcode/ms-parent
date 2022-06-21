@@ -41,7 +41,7 @@
         <commons.codec.version>1.10</commons.codec.version>
         <lombok.version>1.16.20</lombok.version>
         <io.jsonwebtoken>0.9.1</io.jsonwebtoken>
-        <mysql.version>8.0.19</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
         <dozer.version>6.2.0</dozer.version>
         <spring-security-oauth2.version>2.2.6.RELEASE</spring-security-oauth2.version>
         <spring-security-oauth2-autoconfigure.version>2.2.6.RELEASE</spring-security-oauth2-autoconfigure.version>
